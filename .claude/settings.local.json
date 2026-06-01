@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pandoc \"D:/desktop/brilliant.docx\" -t markdown)",
+      "PowerShell(pandoc \"D:\\\\desktop\\\\brilliant.docx\" -t markdown 2>&1)"
+    ]
+  }
+}
