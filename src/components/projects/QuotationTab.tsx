@@ -270,7 +270,7 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 w-full">
       <FeedbackBanner
         message={feedback?.text ?? null}
         variant={feedback?.variant ?? 'error'}
@@ -377,7 +377,7 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
             </div>
           </div>
 
-          <div className="flex gap-3 mt-5 flex-wrap">
+          <div className="flex flex-col sm:flex-row gap-3 mt-5">
             {!isDemo && (
               <Button variant="secondary" onClick={handleSave} disabled={saving} className="flex-1">
                 <Save size={14} /> {saving ? 'Saving...' : 'Save Quotation'}

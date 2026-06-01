@@ -14,3 +14,23 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Horizontal scroll hint on mobile tables */
+.scroll-hint-x {
+  position: relative;
+}
+.scroll-hint-x::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1.5rem;
+  background: linear-gradient(to left, rgb(255 255 255 / 0.95), transparent);
+}
+@media (min-width: 768px) {
+  .scroll-hint-x::after {
+    display: none;
+  }
+}

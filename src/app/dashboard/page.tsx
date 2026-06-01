@@ -50,48 +50,49 @@ export default async function DashboardPage() {
   return (
     <>
       {!dbConnected && (
-        <div className="bg-amber-50 border-b border-amber-200 px-6 py-2 text-center text-sm text-amber-700">
+        <div className="bg-amber-50 border-b border-amber-200 px-4 sm:px-6 py-2 text-center text-sm text-amber-700">
           Demo mode — Supabase is not connected. Copy <code className="font-mono bg-amber-100 px-1 rounded">.env.example</code> to{' '}
           <code className="font-mono bg-amber-100 px-1 rounded">.env.local</code> and run the SQL migrations in the README.
           {' '}Set <code className="font-mono bg-amber-100 px-1 rounded">NEXT_PUBLIC_REQUIRE_SUPABASE=true</code> in production to disable this fallback.
         </div>
       )}
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8 space-y-5 sm:space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Dashboard</h1>
           <p className="text-sm text-gray-500 mt-1">Project pipeline and overview</p>
         </div>
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {[
-            { label: 'Active Projects', value: active.length, icon: FolderOpen, color: 'text-blue-600 bg-blue-50' },
-            { label: 'In Fabrication', value: inFabrication.length, icon: Wrench, color: 'text-orange-600 bg-orange-50' },
-            { label: 'Awaiting Approval', value: awaitingApproval.length, icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
-            { label: 'Completed This Month', value: completedThisMonth.length, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-50' },
+            { label: 'Active Projects', shortLabel: 'Active', value: active.length, icon: FolderOpen, color: 'text-blue-600 bg-blue-50' },
+            { label: 'In Fabrication', shortLabel: 'Fabrication', value: inFabrication.length, icon: Wrench, color: 'text-orange-600 bg-orange-50' },
+            { label: 'Awaiting Approval', shortLabel: 'Awaiting', value: awaitingApproval.length, icon: Clock, color: 'text-yellow-600 bg-yellow-50' },
+            { label: 'Completed This Month', shortLabel: 'Done (month)', value: completedThisMonth.length, icon: CheckCircle, color: 'text-emerald-600 bg-emerald-50' },
           ].map((stat) => (
             <Card key={stat.label}>
-              <CardContent className="flex items-center gap-4 py-5">
-                <div className={`p-2.5 rounded-lg ${stat.color}`}>
-                  <stat.icon size={20} />
+              <CardContent className="flex items-center gap-3 sm:gap-4 py-4 sm:py-5">
+                <div className={`p-2 sm:p-2.5 rounded-lg shrink-0 ${stat.color}`}>
+                  <stat.icon size={18} className="sm:w-5 sm:h-5" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                  <p className="text-xs text-gray-500">{stat.label}</p>
+                <div className="min-w-0">
+                  <p className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</p>
+                  <p className="text-[10px] sm:text-xs text-gray-500 leading-tight">
+                    <span className="sm:hidden">{stat.shortLabel}</span>
+                    <span className="hidden sm:inline">{stat.label}</span>
+                  </p>
                 </div>
               </CardContent>
             </Card>
           ))}
         </div>
 
-        {/* Pipeline value */}
         <Card className="bg-gray-900 text-white border-0">
-          <CardContent className="flex items-center justify-between py-5">
+          <CardContent className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-4 sm:py-5">
             <div className="flex items-center gap-3">
-              <TrendingUp size={20} className="text-gray-400" />
+              <TrendingUp size={20} className="text-gray-400 shrink-0" />
               <span className="text-sm text-gray-400">Total Pipeline Value</span>
             </div>
-            <span className="text-2xl font-bold">{formatCurrency(totalPipeline)}</span>
+            <span className="text-xl sm:text-2xl font-bold">{formatCurrency(totalPipeline)}</span>
           </CardContent>
         </Card>
 

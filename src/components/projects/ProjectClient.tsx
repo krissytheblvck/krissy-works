@@ -354,43 +354,44 @@ export function ProjectClient({ project }: { project: any }) {
   return (
     <div className="min-h-0 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4 shrink-0">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/dashboard">
+      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
+        <div className="max-w-7xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-2 sm:gap-4 min-w-0">
+            <Link href="/dashboard" className="shrink-0 mt-0.5">
               <Button variant="ghost" size="sm"><ArrowLeft size={16} /> Back</Button>
             </Link>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-lg font-bold text-gray-900">{projectMeta.project_code}</h1>
+                <h1 className="text-base sm:text-lg font-bold text-gray-900">{projectMeta.project_code}</h1>
                 <Badge className={STATUS_COLORS[currentStatus]}>{STATUS_LABELS[currentStatus]}</Badge>
                 {isDemo && <Badge className="bg-amber-100 text-amber-700">Demo</Badge>}
                 {!isDemo && nextStatus && (
                   <button onClick={() => handleStatusChange(nextStatus)} disabled={statusChanging}
                     className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors disabled:opacity-50">
                     <ChevronRight size={13} />
-                    {statusChanging ? 'Updating...' : NEXT_LABEL[currentStatus]}
+                    <span className="hidden sm:inline">{statusChanging ? 'Updating...' : NEXT_LABEL[currentStatus]}</span>
+                    <span className="sm:hidden">{statusChanging ? '…' : 'Next'}</span>
                   </button>
                 )}
               </div>
-              <p className="text-sm text-gray-500">{projectMeta.title} — {projectMeta.client?.name}</p>
+              <p className="text-xs sm:text-sm text-gray-500 truncate">{projectMeta.title} — {projectMeta.client?.name}</p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             {!isDemo && (
-              <Button variant="secondary" size="sm" onClick={handleSaveArea} disabled={saving || !activeCalc.isComplete}>
+              <Button variant="secondary" size="sm" className="w-full sm:w-auto justify-center min-h-11 sm:min-h-0" onClick={handleSaveArea} disabled={saving || !activeCalc.isComplete}>
                 <Save size={14} /> {saving ? 'Saving...' : activeArea.saved ? 'Saved ✓' : 'Save Area'}
               </Button>
             )}
-            <Button variant="secondary" size="sm" onClick={downloadGrasshopperFile} disabled={!activeCalc.isComplete}>
-              <Download size={14} /> Export to Rhino
+            <Button variant="secondary" size="sm" className="w-full sm:w-auto justify-center min-h-11 sm:min-h-0" onClick={downloadGrasshopperFile} disabled={!activeCalc.isComplete}>
+              <Download size={14} /> <span className="sm:hidden">Rhino JSON</span><span className="hidden sm:inline">Export to Rhino</span>
             </Button>
           </div>
         </div>
       </header>
 
       {feedback && (
-        <div className="px-6 pt-3 max-w-7xl mx-auto w-full">
+        <div className="px-4 sm:px-6 pt-3 max-w-7xl mx-auto w-full">
           <FeedbackBanner
             message={feedback.text}
             variant={feedback.variant}
@@ -401,7 +402,7 @@ export function ProjectClient({ project }: { project: any }) {
 
       {/* Status stepper */}
       {!isDemo && (
-        <div className="bg-white border-b border-gray-100 px-6 py-2 overflow-x-auto">
+        <div className="bg-white border-b border-gray-100 px-4 sm:px-6 py-2 overflow-x-auto">
           <div className="max-w-7xl mx-auto flex items-center gap-1 min-w-max">
             {STATUS_FLOW.map((s, i) => {
               const isDone    = STATUS_FLOW.indexOf(currentStatus) > i
@@ -425,21 +426,22 @@ export function ProjectClient({ project }: { project: any }) {
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="bg-white border-b border-gray-200 px-6">
+      {/* Tabs — sticky on mobile for thumb reach */}
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 shadow-sm sm:shadow-none">
         <div className="max-w-7xl mx-auto flex">
           {(['survey', 'estimation', 'quotation'] as const).map(tab => (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
+            <button key={tab} type="button" onClick={() => setActiveTab(tab)}
+              className={`flex-1 sm:flex-none px-2 sm:px-6 py-3.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors min-h-12 sm:min-h-0 ${
                 activeTab === tab ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}>
-              {tab === 'survey' ? 'Site Survey' : tab === 'estimation' ? 'Estimation' : 'Quotation'}
+              <span className="sm:hidden">{tab === 'survey' ? 'Survey' : tab === 'estimation' ? 'Estimate' : 'Quote'}</span>
+              <span className="hidden sm:inline">{tab === 'survey' ? 'Site Survey' : tab === 'estimation' ? 'Estimation' : 'Quotation'}</span>
             </button>
           ))}
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
 
         {/* ── SURVEY TAB ─────────────────────────────────────────────────── */}
         {activeTab === 'survey' && (
@@ -517,8 +519,9 @@ export function ProjectClient({ project }: { project: any }) {
                       </p>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <div className="overflow-x-auto">
-                        <table className="w-full text-xs">
+                      <p className="text-[10px] text-gray-400 px-4 pt-2 md:hidden">Swipe table → to compare options</p>
+                      <div className="overflow-x-auto scroll-hint-x">
+                        <table className="w-full text-xs min-w-[640px]">
                           <thead>
                             <tr className="bg-gray-50 border-b border-gray-100 text-gray-500">
                               <th className="px-3 py-2 text-left">Sections</th>
@@ -887,39 +890,59 @@ export function ProjectClient({ project }: { project: any }) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <table className="w-full text-sm">
-                        <thead>
-                          <tr className="bg-gray-50 border-b border-gray-100">
-                            <th className="px-6 py-2.5 text-left font-medium text-gray-600">Item</th>
-                            <th className="px-4 py-2.5 text-right font-medium text-gray-600">Qty</th>
-                            <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit</th>
-                            <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit Price</th>
-                            <th className="px-6 py-2.5 text-right font-medium text-gray-600">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-50">
-                          {estimation.line_items.map((item, i) => (
-                            <tr key={i} className="hover:bg-gray-50">
-                              <td className="px-6 py-3">
-                                <p className="font-medium text-gray-900">{item.label}</p>
-                                <p className="text-xs text-gray-400">{item.sub}</p>
-                              </td>
-                              <td className="px-4 py-3 text-right text-gray-700">{item.qty}</td>
-                              <td className="px-4 py-3 text-right text-gray-500">{item.unit}</td>
-                              <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.unit_price)}</td>
-                              <td className="px-6 py-3 text-right font-semibold text-gray-900">{formatCurrency(item.total)}</td>
+                      <div className="md:hidden divide-y divide-gray-100">
+                        {estimation.line_items.map((item, i) => (
+                          <div key={i} className="px-4 py-3">
+                            <div className="flex justify-between gap-2">
+                              <p className="font-medium text-gray-900 text-sm">{item.label}</p>
+                              <p className="font-semibold text-gray-900 text-sm shrink-0">{formatCurrency(item.total)}</p>
+                            </div>
+                            <p className="text-xs text-gray-400 mt-0.5">{item.sub}</p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {item.qty} {item.unit} × {formatCurrency(item.unit_price)}
+                            </p>
+                          </div>
+                        ))}
+                        <div className="px-4 py-3 bg-gray-50 flex justify-between font-semibold text-sm">
+                          <span>{activeArea.name} Subtotal</span>
+                          <span>{formatCurrency(estimation.subtotal)}</span>
+                        </div>
+                      </div>
+                      <div className="hidden md:block overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="bg-gray-50 border-b border-gray-100">
+                              <th className="px-6 py-2.5 text-left font-medium text-gray-600">Item</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Qty</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit Price</th>
+                              <th className="px-6 py-2.5 text-right font-medium text-gray-600">Total</th>
                             </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr className="bg-gray-50 border-t border-gray-200">
-                            <td colSpan={4} className="px-6 py-3 text-sm font-semibold text-gray-700">
-                              {activeArea.name} Subtotal
-                            </td>
-                            <td className="px-6 py-3 text-right font-bold text-gray-900">{formatCurrency(estimation.subtotal)}</td>
-                          </tr>
-                        </tfoot>
-                      </table>
+                          </thead>
+                          <tbody className="divide-y divide-gray-50">
+                            {estimation.line_items.map((item, i) => (
+                              <tr key={i} className="hover:bg-gray-50">
+                                <td className="px-6 py-3">
+                                  <p className="font-medium text-gray-900">{item.label}</p>
+                                  <p className="text-xs text-gray-400">{item.sub}</p>
+                                </td>
+                                <td className="px-4 py-3 text-right text-gray-700">{item.qty}</td>
+                                <td className="px-4 py-3 text-right text-gray-500">{item.unit}</td>
+                                <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.unit_price)}</td>
+                                <td className="px-6 py-3 text-right font-semibold text-gray-900">{formatCurrency(item.total)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                          <tfoot>
+                            <tr className="bg-gray-50 border-t border-gray-200">
+                              <td colSpan={4} className="px-6 py-3 text-sm font-semibold text-gray-700">
+                                {activeArea.name} Subtotal
+                              </td>
+                              <td className="px-6 py-3 text-right font-bold text-gray-900">{formatCurrency(estimation.subtotal)}</td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
                     </CardContent>
                   </Card>
                 )}
@@ -1101,13 +1124,13 @@ export function ProjectClient({ project }: { project: any }) {
                         <span className="text-2xl font-bold text-gray-900">{formatCurrency(quotedPrice)}</span>
                       </div>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
                       {!isDemo && (
-                        <Button className="flex-1" onClick={handleSaveArea} disabled={saving}>
+                        <Button className="flex-1 min-h-11 sm:min-h-0" onClick={handleSaveArea} disabled={saving}>
                           <Save size={14} /> {saving ? 'Saving...' : 'Save Estimation'}
                         </Button>
                       )}
-                      <Button className="flex-1" variant="secondary" onClick={() => setActiveTab('quotation')}>
+                      <Button className="flex-1 min-h-11 sm:min-h-0" variant="secondary" onClick={() => setActiveTab('quotation')}>
                         Generate Quotation →
                       </Button>
                     </div>
