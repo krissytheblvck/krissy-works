@@ -1,3 +1,4 @@
+
 # Brilliant Metal Works — Project Workflow System
 
 Internal tool for **Brilliant Metal Works** (Rwanda): client management, project pipeline, site surveys, cost estimation, quotations, and PDF export for balcony and staircase metalwork. Currency: **RWF**.
