@@ -1,8 +1,44 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Matte cream (light) + warm stone (dark) */
 :root {
-  --background: #f8f9fa;
-  --foreground: #111827;
+  --background: #f4f1ea;
+  --surface: #faf8f4;
+  --surface-muted: #f0ebe3;
+  --surface-hover: #ebe6dc;
+  --border: #e4ddd2;
+  --foreground: #1c1917;
+  --muted: #78716c;
+  --scroll-fade: 250 248 244;
+  --ring: #44403c;
+}
+
+.dark {
+  --background: #1c1917;
+  --surface: #292524;
+  --surface-muted: #231f1e;
+  --surface-hover: #33302c;
+  --border: #44403c;
+  --foreground: #fafaf9;
+  --muted: #a8a29e;
+  --scroll-fade: 41 37 36;
+  --ring: #d6d3d1;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-hover: var(--surface-hover);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+}
+
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
@@ -13,6 +49,15 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* Smooth theme transition on common surfaces */
+body,
+header,
+nav,
+main,
+.card-surface {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* Horizontal scroll hint on mobile tables */
@@ -27,7 +72,7 @@ body {
   right: 0;
   bottom: 0;
   width: 1.5rem;
-  background: linear-gradient(to left, rgb(255 255 255 / 0.95), transparent);
+  background: linear-gradient(to left, rgb(var(--scroll-fade) / 0.95), transparent);
 }
 @media (min-width: 768px) {
   .scroll-hint-x::after {

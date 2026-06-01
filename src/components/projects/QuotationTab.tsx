@@ -283,18 +283,18 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
           <Input id="timeline" label="Timeline (weeks)" type="number"
             value={timelineWeeks} onChange={(e) => setTimelineWeeks(Number(e.target.value))} />
           <div className="sm:col-span-2 flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Payment Terms</label>
+            <label className="text-sm font-medium text-foreground">Payment Terms</label>
             <input
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
               value={paymentTerms}
               onChange={(e) => setPaymentTerms(e.target.value)}
             />
           </div>
           <div className="sm:col-span-2 flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Additional Scope Notes</label>
+            <label className="text-sm font-medium text-foreground">Additional Scope Notes</label>
             <textarea rows={2} placeholder="Any extra notes for the client..."
               value={scopeNotes} onChange={(e) => setScopeNotes(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none" />
+              className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-[var(--ring)] resize-none" />
           </div>
         </CardContent>
       </Card>
@@ -308,71 +308,71 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
           </div>
         </CardHeader>
         <CardContent>
-          <div className="border border-gray-200 rounded-lg p-6 space-y-5 bg-white text-sm">
+          <div className="border border-border rounded-lg p-6 space-y-5 bg-surface text-sm card-surface">
             {/* Header */}
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Brilliant Metal Works</h2>
-                <p className="text-xs text-gray-500">Custom Metal Design & Fabrication</p>
+                <h2 className="text-lg font-bold text-foreground">Brilliant Metal Works</h2>
+                <p className="text-xs text-muted">Custom Metal Design & Fabrication</p>
               </div>
               <div className="text-right">
-                <p className="font-bold text-gray-900 text-base">QUOTATION</p>
-                <p className="text-xs text-gray-500">{quoteNumber}</p>
-                <p className="text-xs text-gray-400">Date: {today}</p>
+                <p className="font-bold text-foreground text-base">QUOTATION</p>
+                <p className="text-xs text-muted">{quoteNumber}</p>
+                <p className="text-xs text-muted">Date: {today}</p>
               </div>
             </div>
 
-            <hr className="border-gray-100" />
+            <hr className="border-border" />
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Bill To</p>
-                <p className="font-medium text-gray-900">{project.client?.name}</p>
-                {project.client?.phone && <p className="text-xs text-gray-500">{project.client.phone}</p>}
+                <p className="text-xs text-muted uppercase tracking-wider mb-1">Bill To</p>
+                <p className="font-medium text-foreground">{project.client?.name}</p>
+                {project.client?.phone && <p className="text-xs text-muted">{project.client.phone}</p>}
               </div>
               <div>
-                <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Project</p>
-                <p className="font-medium text-gray-900">{project.title}</p>
-                <p className="text-xs text-gray-500">{project.location}</p>
+                <p className="text-xs text-muted uppercase tracking-wider mb-1">Project</p>
+                <p className="font-medium text-foreground">{project.title}</p>
+                <p className="text-xs text-muted">{project.location}</p>
               </div>
             </div>
 
-            <hr className="border-gray-100" />
+            <hr className="border-border" />
 
             {/* Client-facing line items — no internal cost detail */}
             <table className="w-full text-sm">
               <thead>
-                <tr className="text-xs text-gray-400 border-b border-gray-100">
+                <tr className="text-xs text-muted border-b border-border">
                   <th className="text-left pb-2 font-medium">Description</th>
                   <th className="text-right pb-2 font-medium">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-border">
                 {clientCategories.map((cat, i) => (
                   <tr key={i}>
                     <td className="py-2.5">
-                      <p className="font-medium text-gray-800">{cat.label}</p>
-                      <p className="text-xs text-gray-400">{cat.desc}</p>
+                      <p className="font-medium text-foreground">{cat.label}</p>
+                      <p className="text-xs text-muted">{cat.desc}</p>
                     </td>
                     <td className="py-2.5 text-right font-medium">{formatCurrency(cat.amount)}</td>
                   </tr>
                 ))}
               </tbody>
               <tfoot>
-                <tr className="border-t-2 border-gray-200">
-                  <td className="pt-3 font-bold text-gray-900 text-base">TOTAL</td>
-                  <td className="pt-3 text-right font-bold text-xl text-gray-900">{formatCurrency(pricing.quotedPrice)}</td>
+                <tr className="border-t-2 border-border">
+                  <td className="pt-3 font-bold text-foreground text-base">TOTAL</td>
+                  <td className="pt-3 text-right font-bold text-xl text-foreground">{formatCurrency(pricing.quotedPrice)}</td>
                 </tr>
               </tfoot>
             </table>
 
-            <hr className="border-gray-100" />
+            <hr className="border-border" />
 
-            <div className="space-y-1 text-xs text-gray-500">
-              <p><span className="font-semibold text-gray-700">Payment Terms:</span> {paymentTerms}</p>
-              <p><span className="font-semibold text-gray-700">Estimated Timeline:</span> {timelineWeeks} weeks from deposit</p>
-              <p><span className="font-semibold text-gray-700">Valid Until:</span> {validUntilStr}</p>
-              <p><span className="font-semibold text-gray-700">Scope:</span> {scopeText}</p>
+            <div className="space-y-1 text-xs text-muted">
+              <p><span className="font-semibold text-foreground">Payment Terms:</span> {paymentTerms}</p>
+              <p><span className="font-semibold text-foreground">Estimated Timeline:</span> {timelineWeeks} weeks from deposit</p>
+              <p><span className="font-semibold text-foreground">Valid Until:</span> {validUntilStr}</p>
+              <p><span className="font-semibold text-foreground">Scope:</span> {scopeText}</p>
               {scopeNotes && <p>{scopeNotes}</p>}
             </div>
           </div>

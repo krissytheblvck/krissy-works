@@ -354,7 +354,7 @@ export function ProjectClient({ project }: { project: any }) {
   return (
     <div className="min-h-0 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 shrink-0">
+      <header className="bg-surface border-b border-border px-4 sm:px-6 py-3 sm:py-4 shrink-0">
         <div className="max-w-7xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-2 sm:gap-4 min-w-0">
             <Link href="/dashboard" className="shrink-0 mt-0.5">
@@ -362,19 +362,19 @@ export function ProjectClient({ project }: { project: any }) {
             </Link>
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <h1 className="text-base sm:text-lg font-bold text-gray-900">{projectMeta.project_code}</h1>
+                <h1 className="text-base sm:text-lg font-bold text-foreground">{projectMeta.project_code}</h1>
                 <Badge className={STATUS_COLORS[currentStatus]}>{STATUS_LABELS[currentStatus]}</Badge>
                 {isDemo && <Badge className="bg-amber-100 text-amber-700">Demo</Badge>}
                 {!isDemo && nextStatus && (
                   <button onClick={() => handleStatusChange(nextStatus)} disabled={statusChanging}
-                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-700 transition-colors disabled:opacity-50">
+                    className="flex items-center gap-1 text-xs text-muted hover:text-foreground transition-colors disabled:opacity-50">
                     <ChevronRight size={13} />
                     <span className="hidden sm:inline">{statusChanging ? 'Updating...' : NEXT_LABEL[currentStatus]}</span>
                     <span className="sm:hidden">{statusChanging ? '…' : 'Next'}</span>
                   </button>
                 )}
               </div>
-              <p className="text-xs sm:text-sm text-gray-500 truncate">{projectMeta.title} — {projectMeta.client?.name}</p>
+              <p className="text-xs sm:text-sm text-muted truncate">{projectMeta.title} — {projectMeta.client?.name}</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
@@ -402,7 +402,7 @@ export function ProjectClient({ project }: { project: any }) {
 
       {/* Status stepper */}
       {!isDemo && (
-        <div className="bg-white border-b border-gray-100 px-4 sm:px-6 py-2 overflow-x-auto">
+        <div className="bg-surface border-b border-border px-4 sm:px-6 py-2 overflow-x-auto">
           <div className="max-w-7xl mx-auto flex items-center gap-1 min-w-max">
             {STATUS_FLOW.map((s, i) => {
               const isDone    = STATUS_FLOW.indexOf(currentStatus) > i
@@ -413,12 +413,12 @@ export function ProjectClient({ project }: { project: any }) {
                     disabled={statusChanging || s === currentStatus}
                     className={`px-2.5 py-1 rounded text-xs font-medium transition-colors disabled:cursor-default ${
                       isCurrent ? STATUS_COLORS[s] + ' ring-1 ring-current'
-                        : isDone ? 'bg-gray-100 text-gray-400 hover:bg-gray-200'
-                        : 'bg-gray-50 text-gray-400 hover:bg-gray-100'
+                        : isDone ? 'bg-surface-muted text-muted hover:bg-surface-hover'
+                        : 'bg-surface-muted text-muted hover:bg-surface-hover'
                     }`}>
                     {STATUS_LABELS[s]}
                   </button>
-                  {i < STATUS_FLOW.length - 1 && <ChevronRight size={12} className="text-gray-300 flex-shrink-0" />}
+                  {i < STATUS_FLOW.length - 1 && <ChevronRight size={12} className="text-muted flex-shrink-0" />}
                 </div>
               )
             })}
@@ -427,12 +427,12 @@ export function ProjectClient({ project }: { project: any }) {
       )}
 
       {/* Tabs — sticky on mobile for thumb reach */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 sm:px-6 shadow-sm sm:shadow-none">
+      <div className="sticky top-0 z-10 bg-surface border-b border-border px-4 sm:px-6 shadow-sm sm:shadow-none">
         <div className="max-w-7xl mx-auto flex">
           {(['survey', 'estimation', 'quotation'] as const).map(tab => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)}
               className={`flex-1 sm:flex-none px-2 sm:px-6 py-3.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors min-h-12 sm:min-h-0 ${
-                activeTab === tab ? 'border-gray-900 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700'
+                activeTab === tab ? 'border-foreground text-foreground' : 'border-transparent text-muted hover:text-foreground'
               }`}>
               <span className="sm:hidden">{tab === 'survey' ? 'Survey' : tab === 'estimation' ? 'Estimate' : 'Quote'}</span>
               <span className="hidden sm:inline">{tab === 'survey' ? 'Site Survey' : tab === 'estimation' ? 'Estimation' : 'Quotation'}</span>
@@ -453,14 +453,14 @@ export function ProjectClient({ project }: { project: any }) {
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     i === activeAreaIdx
                       ? 'bg-gray-900 text-white'
-                      : 'bg-white text-gray-600 border border-gray-300 hover:border-gray-500'
+                      : 'bg-surface text-muted border border-border hover:border-stone-400'
                   }`}>
                   {area.name || `Area ${i + 1}`}
                   {area.saved && <span className="ml-1 opacity-50 text-xs">✓</span>}
                 </button>
               ))}
               <button onClick={addArea}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-500 border border-dashed border-gray-300 hover:border-gray-500 hover:text-gray-700 transition-colors">
+                className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-muted border border-dashed border-border hover:border-stone-400 hover:text-foreground transition-colors">
                 <Plus size={13} /> Add Area
               </button>
             </div>
@@ -485,9 +485,9 @@ export function ProjectClient({ project }: { project: any }) {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-1">
-                      <label className="text-sm font-medium text-gray-700">Area Name</label>
+                      <label className="text-sm font-medium text-foreground">Area Name</label>
                       <input
-                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                        className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
                         value={activeArea.name}
                         placeholder="e.g. Block A, Pool Deck, Level 2"
                         onChange={e => setAreas(prev => prev.map((a, i) => i === activeAreaIdx ? { ...a, name: e.target.value, saved: false } : a))}
@@ -514,16 +514,16 @@ export function ProjectClient({ project }: { project: any }) {
                   <Card>
                     <CardHeader>
                       <CardTitle>Section Layout</CardTitle>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-muted mt-1">
                         System calculated all options. Click a row to choose. Ranked by total cost.
                       </p>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <p className="text-[10px] text-gray-400 px-4 pt-2 md:hidden">Swipe table → to compare options</p>
+                      <p className="text-[10px] text-muted px-4 pt-2 md:hidden">Swipe table → to compare options</p>
                       <div className="overflow-x-auto scroll-hint-x">
                         <table className="w-full text-xs min-w-[640px]">
                           <thead>
-                            <tr className="bg-gray-50 border-b border-gray-100 text-gray-500">
+                            <tr className="bg-surface-muted border-b border-border text-muted">
                               <th className="px-3 py-2 text-left">Sections</th>
                               <th className="px-3 py-2 text-right">Section W</th>
                               <th className="px-3 py-2 text-right">Cut size</th>
@@ -534,7 +534,7 @@ export function ProjectClient({ project }: { project: any }) {
                               <th className="px-3 py-2"></th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-50">
+                          <tbody className="divide-y divide-border">
                             {estimation.section_options.map((opt, i) => {
                               const isChosen = opt.num_sections === chosenN
                               const isBest   = i === 0
@@ -542,7 +542,7 @@ export function ProjectClient({ project }: { project: any }) {
                                 <tr key={opt.num_sections} onClick={() => pickSection(opt)}
                                   className={`cursor-pointer transition-colors ${
                                     isChosen ? 'bg-gray-900 text-white'
-                                    : 'hover:bg-gray-50 text-gray-700'
+                                    : 'hover:bg-surface-muted text-foreground'
                                   } ${!opt.structural ? 'opacity-50' : ''}`}>
                                   <td className="px-3 py-2.5 font-semibold">{opt.num_sections}</td>
                                   <td className="px-3 py-2.5 text-right">{opt.section_width_mm}mm</td>
@@ -550,7 +550,7 @@ export function ProjectClient({ project }: { project: any }) {
                                   <td className="px-3 py-2.5 text-right whitespace-nowrap">
                                     {opt.supplier_sheet.width_mm}×{opt.supplier_sheet.height_mm}
                                     {opt.panels_per_sheet > 1 && (
-                                      <span className={`ml-1 ${isChosen ? 'text-gray-300' : 'text-blue-500'}`}>
+                                      <span className={`ml-1 ${isChosen ? 'text-muted' : 'text-blue-500'}`}>
                                         ×{opt.panels_per_sheet}
                                       </span>
                                     )}
@@ -564,7 +564,7 @@ export function ProjectClient({ project }: { project: any }) {
                                   <td className="px-3 py-2.5 text-right font-medium">{formatCurrency(opt.total_cost)}</td>
                                   <td className="px-3 py-2.5 text-right">
                                     {isBest && !isChosen && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">BEST</span>}
-                                    {isChosen && <span className="text-xs px-1.5 py-0.5 rounded font-medium bg-white text-gray-900">✓</span>}
+                                    {isChosen && <span className="text-xs px-1.5 py-0.5 rounded font-medium bg-stone-100 text-stone-900 dark:bg-stone-800 dark:text-stone-100">✓</span>}
                                     {!opt.structural && <span className="text-xs text-orange-500">⚠ wide</span>}
                                   </td>
                                 </tr>
@@ -574,7 +574,7 @@ export function ProjectClient({ project }: { project: any }) {
                         </table>
                       </div>
                       {estimation.section_options.some(o => !o.structural) && (
-                        <p className="px-4 py-2 text-xs text-orange-600 border-t border-gray-100">
+                        <p className="px-4 py-2 text-xs text-orange-600 border-t border-border">
                           ⚠ Options marked &quot;wide&quot; exceed 2000mm between posts — check structural adequacy.
                         </p>
                       )}
@@ -630,8 +630,8 @@ export function ProjectClient({ project }: { project: any }) {
                       value={activeArea.survey.top_rail_profile ?? '40x40'}
                       onChange={e => { set('top_rail_profile', e.target.value as SteelProfile); set('num_sections', undefined) }} />
                     <div className="flex flex-col gap-1">
-                      <label className="text-sm font-medium text-gray-700">Inner Catch Frame</label>
-                      <select className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                      <label className="text-sm font-medium text-foreground">Inner Catch Frame</label>
+                      <select className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
                         value={activeArea.survey.catch_profile ?? '20x20'}
                         onChange={e => set('catch_profile', e.target.value)}>
                         <option value="20x20">20×20 SHS (standard)</option>
@@ -654,7 +654,7 @@ export function ProjectClient({ project }: { project: any }) {
                         value={activeArea.survey.sheet_thickness ?? 2} placeholder="2"
                         onChange={e => { set('sheet_thickness', Number(e.target.value)); set('num_sections', undefined) }} />
                       <div className="sm:col-span-2 flex flex-col gap-2">
-                        <label className="text-sm font-medium text-gray-700">Panel Layout</label>
+                        <label className="text-sm font-medium text-foreground">Panel Layout</label>
                         <div className="flex gap-2">
                           {([['full_height', 'Full Height'], ['inset', 'Inset Panel']] as const).map(([v, l]) => (
                             <button key={v} type="button"
@@ -662,13 +662,13 @@ export function ProjectClient({ project }: { project: any }) {
                               className={`flex-1 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
                                 (activeArea.survey.panel_layout ?? 'full_height') === v
                                   ? 'bg-gray-900 text-white border-gray-900'
-                                  : 'bg-white text-gray-600 border-gray-300 hover:border-gray-500'
+                                  : 'bg-surface text-muted border-border hover:border-stone-400'
                               }`}>
                               {l}
                             </button>
                           ))}
                         </div>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-muted">
                           {(activeArea.survey.panel_layout ?? 'full_height') === 'full_height'
                             ? 'Panel fills the full opening between rails.'
                             : 'Panel sits inset within the frame — open space above and/or below.'}
@@ -736,11 +736,11 @@ export function ProjectClient({ project }: { project: any }) {
                       value={activeArea.survey.access_difficulty ?? 'easy'}
                       onChange={e => set('access_difficulty', e.target.value as 'easy' | 'medium' | 'hard')} />
                     <div className="sm:col-span-2 flex flex-col gap-1">
-                      <label className="text-sm font-medium text-gray-700">Site Notes</label>
+                      <label className="text-sm font-medium text-foreground">Site Notes</label>
                       <textarea rows={2} placeholder="Obstacles, access notes..."
                         value={activeArea.survey.site_notes ?? ''}
                         onChange={e => set('site_notes', e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none" />
+                        className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-[var(--ring)] resize-none" />
                     </div>
                   </CardContent>
                 </Card>
@@ -752,7 +752,7 @@ export function ProjectClient({ project }: { project: any }) {
                   <CardHeader>
                     <CardTitle>
                       {activeArea.name}
-                      <span className="text-xs font-normal text-gray-400 ml-2">Live Summary</span>
+                      <span className="text-xs font-normal text-muted ml-2">Live Summary</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2.5 text-sm">
@@ -762,25 +762,25 @@ export function ProjectClient({ project }: { project: any }) {
                       isGlassOnly ? (
                         <>
                           <div className="bg-gray-900 text-white rounded-lg p-3 space-y-1.5">
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Glass System</p>
+                            <p className="text-xs font-semibold text-muted uppercase tracking-wide">Glass System</p>
                             <Row2 label="System" value={GLASS_SYSTEM_LABELS[activeArea.survey.glass_system_type!]} inv />
                             <Row2 label="Panels" value={`${estimation.num_sections} pcs`} inv />
                             <Row2 label="Panel width" value={`${estimation.section_width_mm}mm`} inv />
                             <Row2 label="Glass area" value={`${estimation.infill_area_m2}m²`} inv />
                             <Row2 label="Labor" value={`${estimation.labor_days} day(s)`} inv />
                           </div>
-                          <hr className="border-gray-100" />
+                          <hr className="border-border" />
                           <Row2 label="Glass panels" value={formatCurrency(estimation.infill_cost)} bold />
                           <Row2 label="Hardware" value={formatCurrency(estimation.glass_hardware_cost)} bold />
                           <Row2 label="Labor" value={formatCurrency(estimation.labor_cost)} bold />
-                          <div className="pt-2 border-t border-gray-200">
+                          <div className="pt-2 border-t border-border">
                             <Row2 label="Subtotal" value={formatCurrency(estimation.subtotal)} bold />
                           </div>
                         </>
                       ) : (
                         <>
                           <div className="bg-gray-900 text-white rounded-lg p-3 space-y-1.5">
-                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Chosen Layout</p>
+                            <p className="text-xs font-semibold text-muted uppercase tracking-wide">Chosen Layout</p>
                             <Row2 label="Sections" value={`${estimation.num_sections}`} inv />
                             <Row2 label="Posts" value={`${estimation.post_count} pcs`} inv />
                             <Row2 label="Section width" value={`${estimation.section_width_mm}mm`} inv />
@@ -805,23 +805,23 @@ export function ProjectClient({ project }: { project: any }) {
                             <Row2 label="Sheets needed" value={`${estimation.chosen_section.total_sheets} sheets`} inv />
                             <Row2 label="Waste" value={`${estimation.chosen_section.waste_percent}%`} inv />
                           </div>
-                          <hr className="border-gray-100" />
+                          <hr className="border-border" />
                           <Row2 label="Rails (top+bot)" value={`${(estimation.top_rail_length_m + estimation.bottom_rail_length_m).toFixed(2)}m`} />
                           <Row2 label="Catch frame" value={`${estimation.catch_total_length_m}m`} />
                           <Row2 label="Infill area" value={`${estimation.infill_area_m2}m²`} />
                           <Row2 label="Labor" value={`${estimation.labor_days} day(s)`} />
-                          <hr className="border-gray-100" />
+                          <hr className="border-border" />
                           <Row2 label="Frame + catch" value={formatCurrency(estimation.frame_cost)} bold />
                           <Row2 label="Sheets" value={formatCurrency(estimation.infill_cost)} bold />
                           <Row2 label="CNC cutting" value={formatCurrency(estimation.cutting_cost)} bold />
                           <Row2 label="Labor (est.)" value={formatCurrency(estimation.labor_cost)} />
-                          <div className="pt-2 border-t border-gray-200">
+                          <div className="pt-2 border-t border-border">
                             <Row2 label="Materials subtotal" value={formatCurrency(estimation.subtotal - estimation.labor_cost)} bold />
                           </div>
                         </>
                       )
                     ) : (
-                      <p className="text-gray-400 text-xs">Fill in dimensions to see live calculations.</p>
+                      <p className="text-muted text-xs">Fill in dimensions to see live calculations.</p>
                     )}
                   </CardContent>
                 </Card>
@@ -830,12 +830,12 @@ export function ProjectClient({ project }: { project: any }) {
                 {areas.length > 1 && totalSubtotal > 0 && (
                   <Card>
                     <CardContent className="py-3 space-y-1.5 text-sm">
-                      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">All Areas (materials + labor)</p>
+                      <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-2">All Areas (materials + labor)</p>
                       {areaCalcs.map((c, i) => c.estimation && (
                         <Row2 key={areas[i].tempId} label={areas[i].name}
                           value={formatCurrency((c.estimation.subtotal - c.estimation.labor_cost) + c.cncCuttingCost)} />
                       ))}
-                      <div className="pt-2 border-t border-gray-200">
+                      <div className="pt-2 border-t border-border">
                         <Row2 label="Materials total" value={formatCurrency(totalSubtotal - totalLaborCost + totalCncCost)} bold />
                       </div>
                     </CardContent>
@@ -872,7 +872,7 @@ export function ProjectClient({ project }: { project: any }) {
                           className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                             i === activeAreaIdx
                               ? 'bg-gray-900 text-white'
-                              : 'bg-white text-gray-600 border border-gray-300 hover:border-gray-500'
+                              : 'bg-surface text-muted border border-border hover:border-stone-400'
                           }`}>
                           {area.name}
                         </button>
@@ -890,20 +890,20 @@ export function ProjectClient({ project }: { project: any }) {
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-0">
-                      <div className="md:hidden divide-y divide-gray-100">
+                      <div className="md:hidden divide-y divide-border">
                         {estimation.line_items.map((item, i) => (
                           <div key={i} className="px-4 py-3">
                             <div className="flex justify-between gap-2">
-                              <p className="font-medium text-gray-900 text-sm">{item.label}</p>
-                              <p className="font-semibold text-gray-900 text-sm shrink-0">{formatCurrency(item.total)}</p>
+                              <p className="font-medium text-foreground text-sm">{item.label}</p>
+                              <p className="font-semibold text-foreground text-sm shrink-0">{formatCurrency(item.total)}</p>
                             </div>
-                            <p className="text-xs text-gray-400 mt-0.5">{item.sub}</p>
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-muted mt-0.5">{item.sub}</p>
+                            <p className="text-xs text-muted mt-1">
                               {item.qty} {item.unit} × {formatCurrency(item.unit_price)}
                             </p>
                           </div>
                         ))}
-                        <div className="px-4 py-3 bg-gray-50 flex justify-between font-semibold text-sm">
+                        <div className="px-4 py-3 bg-surface-muted flex justify-between font-semibold text-sm">
                           <span>{activeArea.name} Subtotal</span>
                           <span>{formatCurrency(estimation.subtotal)}</span>
                         </div>
@@ -911,34 +911,34 @@ export function ProjectClient({ project }: { project: any }) {
                       <div className="hidden md:block overflow-x-auto">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="bg-gray-50 border-b border-gray-100">
-                              <th className="px-6 py-2.5 text-left font-medium text-gray-600">Item</th>
-                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Qty</th>
-                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit</th>
-                              <th className="px-4 py-2.5 text-right font-medium text-gray-600">Unit Price</th>
-                              <th className="px-6 py-2.5 text-right font-medium text-gray-600">Total</th>
+                            <tr className="bg-surface-muted border-b border-border">
+                              <th className="px-6 py-2.5 text-left font-medium text-muted">Item</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-muted">Qty</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-muted">Unit</th>
+                              <th className="px-4 py-2.5 text-right font-medium text-muted">Unit Price</th>
+                              <th className="px-6 py-2.5 text-right font-medium text-muted">Total</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-50">
+                          <tbody className="divide-y divide-border">
                             {estimation.line_items.map((item, i) => (
-                              <tr key={i} className="hover:bg-gray-50">
+                              <tr key={i} className="hover:bg-surface-muted">
                                 <td className="px-6 py-3">
-                                  <p className="font-medium text-gray-900">{item.label}</p>
-                                  <p className="text-xs text-gray-400">{item.sub}</p>
+                                  <p className="font-medium text-foreground">{item.label}</p>
+                                  <p className="text-xs text-muted">{item.sub}</p>
                                 </td>
-                                <td className="px-4 py-3 text-right text-gray-700">{item.qty}</td>
-                                <td className="px-4 py-3 text-right text-gray-500">{item.unit}</td>
-                                <td className="px-4 py-3 text-right text-gray-700">{formatCurrency(item.unit_price)}</td>
-                                <td className="px-6 py-3 text-right font-semibold text-gray-900">{formatCurrency(item.total)}</td>
+                                <td className="px-4 py-3 text-right text-foreground">{item.qty}</td>
+                                <td className="px-4 py-3 text-right text-muted">{item.unit}</td>
+                                <td className="px-4 py-3 text-right text-foreground">{formatCurrency(item.unit_price)}</td>
+                                <td className="px-6 py-3 text-right font-semibold text-foreground">{formatCurrency(item.total)}</td>
                               </tr>
                             ))}
                           </tbody>
                           <tfoot>
-                            <tr className="bg-gray-50 border-t border-gray-200">
-                              <td colSpan={4} className="px-6 py-3 text-sm font-semibold text-gray-700">
+                            <tr className="bg-surface-muted border-t border-border">
+                              <td colSpan={4} className="px-6 py-3 text-sm font-semibold text-foreground">
                                 {activeArea.name} Subtotal
                               </td>
-                              <td className="px-6 py-3 text-right font-bold text-gray-900">{formatCurrency(estimation.subtotal)}</td>
+                              <td className="px-6 py-3 text-right font-bold text-foreground">{formatCurrency(estimation.subtotal)}</td>
                             </tr>
                           </tfoot>
                         </table>
@@ -956,28 +956,28 @@ export function ProjectClient({ project }: { project: any }) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Variable Costs</CardTitle>
-                    <p className="text-xs text-gray-500 mt-1">These costs vary per job — adjust before quoting.</p>
+                    <p className="text-xs text-muted mt-1">These costs vary per job — adjust before quoting.</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {/* Per-area CNC costs */}
                     {areas.some((a, i) => areaCalcs[i].estimation && !areaCalcs[i].isGlassOnly && a.survey.infill_type === 'plain_sheet') && (
-                      <div className={`${areas.length > 1 ? 'border border-gray-100 rounded-lg p-4' : ''}`}>
-                        {areas.length > 1 && <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">CNC Rate per Area</p>}
+                      <div className={`${areas.length > 1 ? 'border border-border rounded-lg p-4' : ''}`}>
+                        {areas.length > 1 && <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">CNC Rate per Area</p>}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {areas.map((area, i) => {
                             const c = areaCalcs[i]
                             if (!c.estimation || c.isGlassOnly || area.survey.infill_type !== 'plain_sheet') return null
                             return (
                               <div key={area.tempId} className="flex flex-col gap-1">
-                                <label className="text-sm font-medium text-gray-700">
+                                <label className="text-sm font-medium text-foreground">
                                   {areas.length > 1 ? `${area.name} — CNC` : 'CNC / Laser Cutting'}
-                                  <span className="text-xs text-gray-400 ml-1">— {c.estimation.total_sheets} sheet(s) = {formatCurrency(c.cncCuttingCost)}</span>
+                                  <span className="text-xs text-muted ml-1">— {c.estimation.total_sheets} sheet(s) = {formatCurrency(c.cncCuttingCost)}</span>
                                 </label>
                                 <div className="flex gap-2 items-center">
                                   <input type="number" min={0} value={area.cncRatePerSheet}
                                     onChange={e => setAreas(prev => prev.map((a, j) => j === i ? { ...a, cncRatePerSheet: Number(e.target.value), saved: false } : a))}
-                                    className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                                  <span className="text-sm text-gray-500 whitespace-nowrap">RWF / sheet</span>
+                                    className="flex-1 rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                                  <span className="text-sm text-muted whitespace-nowrap">RWF / sheet</span>
                                 </div>
                               </div>
                             )
@@ -987,25 +987,25 @@ export function ProjectClient({ project }: { project: any }) {
                     )}
 
                     {/* Project-level costs */}
-                    <div className={`${areas.length > 1 ? 'border border-gray-100 rounded-lg p-4' : ''}`}>
-                      {areas.length > 1 && <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Project-Level</p>}
+                    <div className={`${areas.length > 1 ? 'border border-border rounded-lg p-4' : ''}`}>
+                      {areas.length > 1 && <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Project-Level</p>}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {!areaCalcs.every(c => c.isGlassOnly) && (
                           <div className="flex flex-col gap-1">
-                            <label className="text-sm font-medium text-gray-700">
+                            <label className="text-sm font-medium text-foreground">
                               Welding Consumables
-                              <span className="text-xs text-gray-400 ml-1">= {formatCurrency(consumablesCost)}</span>
+                              <span className="text-xs text-muted ml-1">= {formatCurrency(consumablesCost)}</span>
                             </label>
                             <div className="flex gap-2 items-center">
                               <input type="number" min={0} max={30} step={0.5} value={consumablesPercent}
                                 onChange={e => setConsumablesPercent(Number(e.target.value))}
-                                className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                              <span className="text-sm text-gray-500">% of frame cost</span>
+                                className="w-20 rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                              <span className="text-sm text-muted">% of frame cost</span>
                             </div>
                           </div>
                         )}
                         <div className="flex flex-col gap-1">
-                          <label className="text-sm font-medium text-gray-700">Surface Treatment</label>
+                          <label className="text-sm font-medium text-foreground">Surface Treatment</label>
                           <select value={surfaceTreatmentType}
                             onChange={e => {
                               const t = e.target.value as 'none' | 'powder_coat' | 'paint'
@@ -1013,7 +1013,7 @@ export function ProjectClient({ project }: { project: any }) {
                               if (t === 'powder_coat') setSurfaceTreatmentRate(8000)
                               if (t === 'paint') setSurfaceTreatmentRate(5000)
                             }}
-                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900">
+                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]">
                             <option value="none">None</option>
                             <option value="powder_coat">Powder Coat</option>
                             <option value="paint">Paint / Primer</option>
@@ -1022,18 +1022,18 @@ export function ProjectClient({ project }: { project: any }) {
                             <div className="flex gap-2 items-center mt-1">
                               <input type="number" min={0} value={surfaceTreatmentRate}
                                 onChange={e => setSurfaceTreatmentRate(Number(e.target.value))}
-                                className="w-28 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                              <span className="text-xs text-gray-500">
+                                className="w-28 rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                              <span className="text-xs text-muted">
                                 RWF/m² → {formatCurrency(surfaceTreatmentCost)}
                               </span>
                             </div>
                           )}
                         </div>
                         <div className="flex flex-col gap-1">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-foreground">
                             Fabrication Labor
                             {totalLaborDays > 0 && (
-                              <span className="text-xs text-gray-400 ml-1">
+                              <span className="text-xs text-muted ml-1">
                                 — {totalLaborDays} day(s) est. = {formatCurrency(totalLaborCost)}
                               </span>
                             )}
@@ -1041,8 +1041,8 @@ export function ProjectClient({ project }: { project: any }) {
                           <input type="number" min={0} value={fabricationCost || ''}
                             placeholder={String(totalLaborCost || 0)}
                             onChange={e => setFabricationCost(Number(e.target.value))}
-                            className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                          <p className="text-xs text-gray-400">One crew covers all areas — enter total fabrication cost</p>
+                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                          <p className="text-xs text-muted">One crew covers all areas — enter total fabrication cost</p>
                         </div>
                         <Input id="install_cost" label="Installation (all areas)" type="number" unit="RWF"
                           value={installationCost || ''} placeholder="0"
@@ -1061,67 +1061,67 @@ export function ProjectClient({ project }: { project: any }) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Pricing</CardTitle>
-                    <p className="text-xs text-gray-500 mt-1">Set your margin before generating the quotation.</p>
+                    <p className="text-xs text-muted mt-1">Set your margin before generating the quotation.</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium text-gray-700">Contingency</label>
+                        <label className="text-sm font-medium text-foreground">Contingency</label>
                         <div className="flex gap-2 items-center">
                           <input type="number" min={0} max={50} value={contingencyPercent}
                             onChange={e => setContingencyPercent(Number(e.target.value))}
-                            className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                          <span className="text-sm text-gray-500">% risk buffer</span>
+                            className="w-20 rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                          <span className="text-sm text-muted">% risk buffer</span>
                         </div>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <label className="text-sm font-medium text-gray-700">Business Margin</label>
+                        <label className="text-sm font-medium text-foreground">Business Margin</label>
                         <div className="flex gap-2 items-center">
                           <input type="number" min={0} max={100} value={marginPercent}
                             onChange={e => setMarginPercent(Number(e.target.value))}
-                            className="w-20 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900" />
-                          <span className="text-sm text-gray-500">% overhead + profit</span>
+                            className="w-20 rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]" />
+                          <span className="text-sm text-muted">% overhead + profit</span>
                         </div>
                       </div>
                     </div>
 
                     {/* All-areas cost summary */}
                     {areas.length > 1 && (
-                      <div className="bg-gray-50 rounded-lg p-3 text-xs space-y-1">
-                        <p className="font-semibold text-gray-500 uppercase tracking-wide mb-2">Area Subtotals</p>
+                      <div className="bg-surface-muted rounded-lg p-3 text-xs space-y-1">
+                        <p className="font-semibold text-muted uppercase tracking-wide mb-2">Area Subtotals</p>
                         {areaCalcs.map((c, i) => c.estimation && (
-                          <div key={areas[i].tempId} className="flex justify-between text-gray-600">
+                          <div key={areas[i].tempId} className="flex justify-between text-muted">
                             <span>{areas[i].name}</span>
                             <span>{formatCurrency((c.estimation.subtotal - c.estimation.labor_cost) + c.cncCuttingCost)}</span>
                           </div>
                         ))}
-                        <div className="flex justify-between text-gray-700 font-semibold border-t border-gray-200 pt-1 mt-1">
+                        <div className="flex justify-between text-foreground font-semibold border-t border-border pt-1 mt-1">
                           <span>Materials total</span>
                           <span>{formatCurrency(totalSubtotal - totalLaborCost + totalCncCost)}</span>
                         </div>
                       </div>
                     )}
 
-                    <div className="bg-gray-50 rounded-lg p-4 space-y-2 text-sm">
-                      <div className="flex justify-between text-gray-600">
+                    <div className="bg-surface-muted rounded-lg p-4 space-y-2 text-sm">
+                      <div className="flex justify-between text-muted">
                         <span>Your direct cost</span>
                         <span className="font-medium">{formatCurrency(directTotal)}</span>
                       </div>
-                      <div className="flex justify-between text-gray-400 text-xs">
+                      <div className="flex justify-between text-muted text-xs">
                         <span className="pl-3">+ Contingency ({contingencyPercent}%)</span>
                         <span>+{formatCurrency(contingencyCost)}</span>
                       </div>
-                      <div className="flex justify-between text-gray-700 font-medium border-t border-gray-200 pt-2">
+                      <div className="flex justify-between text-foreground font-medium border-t border-border pt-2">
                         <span>Adjusted cost</span>
                         <span>{formatCurrency(adjustedCost)}</span>
                       </div>
-                      <div className="flex justify-between text-gray-400 text-xs">
+                      <div className="flex justify-between text-muted text-xs">
                         <span className="pl-3">+ Business margin ({marginPercent}%)</span>
                         <span>+{formatCurrency(marginCost)}</span>
                       </div>
-                      <div className="flex justify-between border-t-2 border-gray-900 pt-2 mt-1">
-                        <span className="text-base font-bold text-gray-900">QUOTED PRICE</span>
-                        <span className="text-2xl font-bold text-gray-900">{formatCurrency(quotedPrice)}</span>
+                      <div className="flex justify-between border-t-2 border-foreground pt-2 mt-1">
+                        <span className="text-base font-bold text-foreground">QUOTED PRICE</span>
+                        <span className="text-2xl font-bold text-foreground">{formatCurrency(quotedPrice)}</span>
                       </div>
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3">
@@ -1139,7 +1139,7 @@ export function ProjectClient({ project }: { project: any }) {
               </>
             ) : (
               <Card>
-                <CardContent className="py-12 text-center text-gray-400">
+                <CardContent className="py-12 text-center text-muted">
                   Complete the site survey first.
                   <div className="mt-4">
                     <Button variant="secondary" onClick={() => setActiveTab('survey')}>← Go to Survey</Button>
@@ -1183,8 +1183,8 @@ export function ProjectClient({ project }: { project: any }) {
 function Row2({ label, value, bold, inv }: { label: string; value: string; bold?: boolean; inv?: boolean }) {
   return (
     <div className="flex justify-between items-center">
-      <span className={inv ? 'text-gray-400' : 'text-gray-500'}>{label}</span>
-      <span className={inv ? 'text-white font-medium' : bold ? 'font-semibold text-gray-900' : 'text-gray-700'}>{value}</span>
+      <span className={inv ? 'text-muted' : 'text-muted'}>{label}</span>
+      <span className={inv ? 'text-white font-medium' : bold ? 'font-semibold text-foreground' : 'text-foreground'}>{value}</span>
     </div>
   )
 }

@@ -165,14 +165,14 @@ export const STATUS_LABELS: Record<ProjectStatus, string> = {
 }
 
 export const STATUS_COLORS: Record<ProjectStatus, string> = {
-  inquiry: 'bg-gray-100 text-gray-700',
-  site_survey: 'bg-blue-100 text-blue-700',
-  concept_design: 'bg-purple-100 text-purple-700',
-  quotation_sent: 'bg-yellow-100 text-yellow-700',
-  approved: 'bg-green-100 text-green-700',
-  fabrication: 'bg-orange-100 text-orange-700',
-  installation: 'bg-cyan-100 text-cyan-700',
-  completed: 'bg-emerald-100 text-emerald-700',
+  inquiry: 'bg-stone-200/80 text-stone-800 dark:bg-stone-700 dark:text-stone-200',
+  site_survey: 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200',
+  concept_design: 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-200',
+  quotation_sent: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-950 dark:text-yellow-200',
+  approved: 'bg-green-100 text-green-800 dark:bg-green-950 dark:text-green-200',
+  fabrication: 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-200',
+  installation: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-200',
+  completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
 }
 
 export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {

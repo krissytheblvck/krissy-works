@@ -14,11 +14,11 @@ export default async function ClientsPage() {
   return (
     <main className="max-w-6xl mx-auto px-4 sm:px-6 py-5 sm:py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
-        <p className="text-sm text-gray-500 mt-1">{clients.length} client{clients.length !== 1 ? 's' : ''} total</p>
+        <h1 className="text-2xl font-bold text-foreground">Clients</h1>
+        <p className="text-sm text-muted mt-1">{clients.length} client{clients.length !== 1 ? 's' : ''} total</p>
       </div>
         {clients.length === 0 ? (
-          <div className="text-center py-16 text-gray-400">
+          <div className="text-center py-16 text-muted">
             <Users size={40} className="mx-auto mb-3 opacity-30" />
             <p className="text-sm">No clients yet. Create a project to add your first client.</p>
           </div>
@@ -42,19 +42,19 @@ export default async function ClientsPage() {
                     <CardContent className="py-5 space-y-4">
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <p className="font-semibold text-gray-900 truncate">{client.name}</p>
+                          <p className="font-semibold text-foreground truncate">{client.name}</p>
                           {client.company && (
-                            <p className="text-xs text-gray-500 truncate">{client.company}</p>
+                            <p className="text-xs text-muted truncate">{client.company}</p>
                           )}
-                          <p className="text-xs text-gray-400 mt-0.5">{client.phone}</p>
+                          <p className="text-xs text-muted mt-0.5">{client.phone}</p>
                         </div>
                         <div className="flex-shrink-0 text-right">
-                          <p className="text-sm font-bold text-gray-900">{formatCurrency(totalValue)}</p>
-                          <p className="text-xs text-gray-400">total value</p>
+                          <p className="text-sm font-bold text-foreground">{formatCurrency(totalValue)}</p>
+                          <p className="text-xs text-muted">total value</p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-gray-500">
+                      <div className="flex items-center gap-3 text-xs text-muted">
                         <span className="flex items-center gap-1">
                           <FolderOpen size={12} />
                           {projects.length} project{projects.length !== 1 ? 's' : ''}
@@ -73,13 +73,13 @@ export default async function ClientsPage() {
                           {projects.slice(0, 4).map((p: any) => (
                             <Badge
                               key={p.id}
-                              className={`text-xs ${STATUS_COLORS[p.status as keyof typeof STATUS_COLORS] ?? 'bg-gray-100 text-gray-600'}`}
+                              className={`text-xs ${STATUS_COLORS[p.status as keyof typeof STATUS_COLORS] ?? 'bg-surface-muted text-muted'}`}
                             >
                               {p.project_code}
                             </Badge>
                           ))}
                           {projects.length > 4 && (
-                            <span className="text-xs text-gray-400 self-center">+{projects.length - 4} more</span>
+                            <span className="text-xs text-muted self-center">+{projects.length - 4} more</span>
                           )}
                         </div>
                       )}

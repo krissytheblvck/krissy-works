@@ -12,11 +12,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed',
+          'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50 disabled:cursor-not-allowed',
           {
-            'bg-gray-900 text-white hover:bg-gray-800 focus:ring-gray-900': variant === 'primary',
-            'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-300': variant === 'secondary',
-            'text-gray-600 hover:bg-gray-100 focus:ring-gray-300': variant === 'ghost',
+            'bg-stone-900 text-stone-50 hover:bg-stone-800 focus:ring-stone-900 dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-stone-200 dark:focus:ring-stone-300':
+              variant === 'primary',
+            'bg-surface text-foreground border border-border hover:bg-surface-hover focus:ring-stone-400 dark:focus:ring-stone-500':
+              variant === 'secondary',
+            'text-muted hover:bg-surface-hover hover:text-foreground focus:ring-stone-400':
+              variant === 'ghost',
             'bg-red-600 text-white hover:bg-red-700 focus:ring-red-600': variant === 'danger',
           },
           {

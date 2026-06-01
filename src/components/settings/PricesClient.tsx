@@ -136,7 +136,7 @@ export function PricesClient({ initialPrices }: { initialPrices: MaterialPrice[]
         onField={setField}
         saving={saving}
         renderRow={(p) => (
-          <span className="text-gray-500 text-xs">{p.thickness_mm}mm · {p.width_mm}×{p.height_mm}mm · {formatCurrency(p.price)}/sheet</span>
+          <span className="text-muted text-xs">{p.thickness_mm}mm · {p.width_mm}×{p.height_mm}mm · {formatCurrency(p.price)}/sheet</span>
         )}
         renderForm={() => (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -163,14 +163,14 @@ export function PricesClient({ initialPrices }: { initialPrices: MaterialPrice[]
         onField={setField}
         saving={saving}
         renderRow={(p) => (
-          <span className="text-gray-500 text-xs">{p.profile} · wall {p.wall_thickness_mm}mm · {p.bar_length_mm}mm bar · {formatCurrency(p.price)}/bar</span>
+          <span className="text-muted text-xs">{p.profile} · wall {p.wall_thickness_mm}mm · {p.bar_length_mm}mm bar · {formatCurrency(p.price)}/bar</span>
         )}
         renderForm={() => (
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">Profile</label>
+              <label className="text-sm font-medium text-foreground">Profile</label>
               <select
-                className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
                 value={editing?.data.profile ?? '40x40'}
                 onChange={(e) => setField('profile', e.target.value)}
               >
@@ -200,7 +200,7 @@ export function PricesClient({ initialPrices }: { initialPrices: MaterialPrice[]
         onField={setField}
         saving={saving}
         renderRow={(p) => (
-          <span className="text-gray-500 text-xs">{p.thickness_mm}mm sheet · {formatCurrency(p.price)}/sheet cut</span>
+          <span className="text-muted text-xs">{p.thickness_mm}mm sheet · {formatCurrency(p.price)}/sheet cut</span>
         )}
         renderForm={() => (
           <div className="grid grid-cols-2 gap-3">
@@ -225,7 +225,7 @@ export function PricesClient({ initialPrices }: { initialPrices: MaterialPrice[]
         onField={setField}
         saving={saving}
         renderRow={(p) => (
-          <span className="text-gray-500 text-xs">{p.thickness_mm}mm · {formatCurrency(p.price)}/m²</span>
+          <span className="text-muted text-xs">{p.thickness_mm}mm · {formatCurrency(p.price)}/m²</span>
         )}
         renderForm={() => (
           <div className="grid grid-cols-2 gap-3">
@@ -250,7 +250,7 @@ export function PricesClient({ initialPrices }: { initialPrices: MaterialPrice[]
         onField={setField}
         saving={saving}
         renderRow={(p) => (
-          <span className="text-gray-500 text-xs">{formatCurrency(p.price)}/day</span>
+          <span className="text-muted text-xs">{formatCurrency(p.price)}/day</span>
         )}
         renderForm={() => (
           <div className="grid grid-cols-2 gap-3">
@@ -291,7 +291,7 @@ function PriceSection({
         <div className="flex items-start justify-between">
           <div>
             <CardTitle>{title}</CardTitle>
-            <p className="text-xs text-gray-500 mt-0.5">{description}</p>
+            <p className="text-xs text-muted mt-0.5">{description}</p>
           </div>
           <Button size="sm" variant="secondary" onClick={() => onAdd(category)}>
             <Plus size={14} /> Add
@@ -300,9 +300,9 @@ function PriceSection({
       </CardHeader>
       <CardContent className="p-0">
         <table className="w-full text-sm">
-          <tbody className="divide-y divide-gray-50">
+          <tbody className="divide-y divide-border">
             {items.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
+              <tr key={item.id} className="hover:bg-surface-hover">
                 {editing?.id === item.id ? (
                   <td className="px-6 py-4" colSpan={2}>
                     <div className="space-y-3">
@@ -320,7 +320,7 @@ function PriceSection({
                 ) : (
                   <>
                     <td className="px-6 py-3">
-                      <p className="font-medium text-gray-900">{item.name}</p>
+                      <p className="font-medium text-foreground">{item.name}</p>
                       {renderRow(item)}
                     </td>
                     <td className="px-6 py-3 text-right">
@@ -359,7 +359,7 @@ function PriceSection({
 
             {items.length === 0 && addingCategory !== category && (
               <tr>
-                <td className="px-6 py-4 text-gray-400 text-sm" colSpan={2}>
+                <td className="px-6 py-4 text-muted text-sm" colSpan={2}>
                   No prices set yet. Click Add to create one.
                 </td>
               </tr>
