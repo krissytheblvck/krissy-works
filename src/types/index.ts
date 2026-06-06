@@ -97,6 +97,11 @@ export interface BalconySurvey {
   // Mounting
   mounting_type: MountingType
   wall_type?: WallType
+  // Custom section option ("Try Your Own Layout")
+  custom_sections?: number
+  custom_section_width_mm?: number
+  custom_cut_width_mm?: number
+  custom_cut_height_mm?: number
   // Site conditions
   access_difficulty: 'easy' | 'medium' | 'hard'
   site_notes?: string
@@ -214,6 +219,11 @@ export interface StaircaseSurvey {
   glass_system_type?: GlassSystemType
   bar_profile?: string
   bar_spacing?: number
+  // Custom section option ("Try Your Own Layout")
+  custom_sections?: number
+  custom_section_width_mm?: number
+  custom_cut_width_mm?: number
+  custom_cut_height_mm?: number
   // Site
   access_difficulty: 'easy' | 'medium' | 'hard'
   site_notes?: string

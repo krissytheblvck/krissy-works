@@ -2,7 +2,7 @@ import type { BalconySurvey, ResolvedPrices, SectionOption } from '@/types'
 import { DEFAULT_RESOLVED_PRICES } from '@/lib/default-prices'
 
 const WASTE_PROFILE  = 1.05  // 5% profile off-cut waste
-const CATCH_OVERLAP  = 20    // mm sheet overlaps into catch each side
+export const CATCH_OVERLAP  = 20    // mm sheet overlaps into catch each side
 const MAX_SECTION_W  = 2000  // mm — structural max post spacing
 
 export interface MaterialLineItem {
@@ -51,8 +51,8 @@ export interface BalconyEstimationResult {
 }
 
 // Parse profile string e.g. '40x20' → width=40, height=20
-function pw(profile: string): number { return Number(profile.split('x')[0]) || 40 }
-function ph(profile: string): number { return Number(profile.split('x')[1]) || 40 }
+export function pw(profile: string): number { return Number(profile.split('x')[0]) || 40 }
+export function ph(profile: string): number { return Number(profile.split('x')[1]) || 40 }
 
 function barsNeeded(totalLengthM: number, barLengthMm: number): number {
   return Math.ceil((totalLengthM / (barLengthMm / 1000)) * WASTE_PROFILE)
@@ -60,7 +60,7 @@ function barsNeeded(totalLengthM: number, barLengthMm: number): number {
 
 // How many cut pieces (cw×ch) fit on one supplier sheet (sw×sh)?
 // Tries both normal and 90° rotated orientation.
-function panelsPerSheet(cw: number, ch: number, sw: number, sh: number): number {
+export function panelsPerSheet(cw: number, ch: number, sw: number, sh: number): number {
   const normal   = Math.floor(sw / cw) * Math.floor(sh / ch)
   const rotated  = Math.floor(sw / ch) * Math.floor(sh / cw)
   return Math.max(normal, rotated, 0)

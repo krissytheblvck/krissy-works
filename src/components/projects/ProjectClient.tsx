@@ -15,6 +15,7 @@ import { DEFAULT_RESOLVED_PRICES } from '@/lib/default-prices'
 import { formatCurrency } from '@/lib/utils'
 import { saveAreaSurvey, deleteAreaSurvey, updateProjectStatus } from '@/app/actions/projects'
 import { QuotationTab } from './QuotationTab'
+import { CustomSectionOption } from './CustomSectionOption'
 import { FeedbackBanner } from '@/components/ui/feedback-banner'
 
 const STATUS_FLOW: ProjectStatus[] = [
@@ -580,6 +581,35 @@ export function ProjectClient({ project }: { project: any }) {
                       )}
                     </CardContent>
                   </Card>
+                )}
+
+                {activeArea.survey.infill_type === 'plain_sheet' && estimation && estimation.section_options.length > 0 && (
+                  <CustomSectionOption
+                    options={estimation.section_options}
+                    totalLengthMm={activeArea.survey.total_length!}
+                    totalHeightMm={activeArea.survey.total_height!}
+                    postProfile={activeArea.survey.post_profile!}
+                    topRailProfile={activeArea.survey.top_rail_profile!}
+                    bottomRailProfile={activeArea.survey.bottom_rail_profile!}
+                    panelHeightMm={activeArea.survey.panel_layout === 'inset' ? activeArea.survey.panel_height_mm : undefined}
+                    sheetThickness={activeArea.survey.sheet_thickness ?? 2}
+                    allSheets={DEFAULT_RESOLVED_PRICES.allSheets ?? []}
+                    initialValues={{
+                      custom_sections: activeArea.survey.custom_sections,
+                      custom_section_width_mm: activeArea.survey.custom_section_width_mm,
+                      custom_cut_width_mm: activeArea.survey.custom_cut_width_mm,
+                      custom_cut_height_mm: activeArea.survey.custom_cut_height_mm,
+                    }}
+                    onSelect={(numSections) => {
+                      const opt = estimation.section_options.find(o => o.num_sections === numSections)
+                      if (opt) pickSection(opt)
+                    }}
+                    onCustomChange={(vals) => {
+                      setAreas(prev => prev.map((a, i) =>
+                        i === activeAreaIdx ? { ...a, survey: { ...a.survey, ...vals }, saved: false } : a
+                      ))
+                    }}
+                  />
                 )}
 
                 {/* For glass/flat bars — manual panel width / post spacing */}

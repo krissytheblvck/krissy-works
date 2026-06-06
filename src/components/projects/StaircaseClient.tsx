@@ -17,6 +17,7 @@ import { formatCurrency } from '@/lib/utils'
 import { saveStaircaseSurveyAndEstimation } from '@/app/actions/staircase'
 import { updateProjectStatus } from '@/app/actions/projects'
 import { QuotationTab } from './QuotationTab'
+import { StaircaseCustomSectionOption } from './StaircaseCustomSectionOption'
 import { FeedbackBanner } from '@/components/ui/feedback-banner'
 
 const PROFILE_OPTIONS = [
@@ -486,6 +487,34 @@ export function StaircaseClient({ project }: { project: any }) {
                     )}
                   </CardContent>
                 </Card>
+              )}
+
+              {survey.infill_type === 'plain_sheet' && estimation && estimation.section_options.length > 0 && (
+                <StaircaseCustomSectionOption
+                  options={estimation.section_options}
+                  stringerLengthMm={Math.round(estimation.stringer_length_m * 1000)}
+                  totalRunMm={survey.total_run!}
+                  handrailHeightMm={survey.handrail_height!}
+                  postProfile={survey.post_profile!}
+                  topRailProfile={survey.top_rail_profile!}
+                  bottomRailProfile={survey.bottom_rail_profile!}
+                  sheetThickness={survey.sheet_thickness ?? 2}
+                  allSheets={DEFAULT_RESOLVED_PRICES.allSheets ?? []}
+                  initialValues={{
+                    custom_sections: survey.custom_sections,
+                    custom_section_width_mm: survey.custom_section_width_mm,
+                    custom_cut_width_mm: survey.custom_cut_width_mm,
+                    custom_cut_height_mm: survey.custom_cut_height_mm,
+                  }}
+                  onSelect={(numSections) => {
+                    const opt = estimation.section_options.find(o => o.num_sections === numSections)
+                    if (opt) pickSection(opt)
+                  }}
+                  onCustomChange={(vals) => {
+                    setSurvey(prev => ({ ...prev, ...vals }))
+                    setSaved(false)
+                  }}
+                />
               )}
 
               {!isGlassOnly && <Card>
