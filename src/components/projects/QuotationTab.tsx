@@ -137,7 +137,7 @@ function buildClientCategories(areas: AreaForQuot[], pricing: PricingBreakdown, 
   return cats.map((c, i) => ({ ...c, amount: amounts[i] }))
 }
 
-export function QuotationTab({ project, projectType, areas, pricing, estimationId, existingQuotation, isDemo }: Props) {
+export function QuotationTab({ project, projectType, areas, pricing, estimationId, existingQuotation, isDemo, elementId }: Props) {
   const [timelineWeeks, setTimelineWeeks] = useState<number>(existingQuotation?.timeline_weeks ?? 3)
   const [paymentTerms, setPaymentTerms] = useState(existingQuotation?.payment_terms ?? '50% deposit on approval, 50% on completion')
   const [scopeNotes, setScopeNotes] = useState(existingQuotation?.scope_of_work ?? '')
