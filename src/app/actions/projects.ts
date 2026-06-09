@@ -103,7 +103,9 @@ export async function getProject(id: string) {
     .single()
 
   if (error) throw new Error(error.message)
-  return data
+
+  const { project_elements, ...rest } = data
+  return { ...rest, elements: project_elements ?? [] }
 }
 
 export async function updateProjectStatus(id: string, status: string) {

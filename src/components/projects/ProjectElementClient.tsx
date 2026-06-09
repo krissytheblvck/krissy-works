@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import { Plus, X } from 'lucide-react'
 import { ProjectClient } from './ProjectClient'
 import { StaircaseClient } from './StaircaseClient'
@@ -20,9 +19,9 @@ interface Props {
 }
 
 export function ProjectElementClient({ project, initialPrices }: Props) {
-  const router = useRouter()
-  const elements = (project.elements ?? []).sort((a, b) => a.display_order - b.display_order)
-  const [activeElementId, setActiveElementId] = useState<string | null>(elements[0]?.id ?? null)
+  const initElements = (project.elements ?? []).sort((a, b) => a.display_order - b.display_order)
+  const [elements, setElements] = useState<ProjectElement[]>(initElements)
+  const [activeElementId, setActiveElementId] = useState<string | null>(initElements[0]?.id ?? null)
   const [showAddForm, setShowAddForm] = useState(false)
   const [newType, setNewType] = useState<ProjectType>('balcony')
   const [newName, setNewName] = useState('')
@@ -51,7 +50,7 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
     setAdding(true)
     try {
       const el = await createProjectElement(project.id, newType, newName.trim())
-      router.refresh()
+      setElements(prev => [...prev, el].sort((a, b) => a.display_order - b.display_order))
       setActiveElementId(el.id)
       setShowAddForm(false)
       setNewName('')
@@ -60,7 +59,7 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
     } finally {
       setAdding(false)
     }
-  }, [newName, newType, project.id, router])
+  }, [newName, newType, project.id])
 
   return (
     <div className="flex flex-1 min-h-0">

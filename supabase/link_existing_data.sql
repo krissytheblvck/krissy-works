@@ -1,23 +1,3 @@
--- Project Elements: enables multiple element types within a single project
-
-create table project_elements (
-  id uuid primary key default gen_random_uuid(),
-  project_id uuid not null references projects(id) on delete cascade,
-  type text not null check (type in ('balcony','staircase','railing','gate','facade','ceiling','lighting','custom')),
-  name text not null,
-  display_order int not null default 0,
-  created_at timestamptz default now(),
-  updated_at timestamptz default now()
-);
-
-create index idx_project_elements_project_id on project_elements(project_id);
-
--- Add element_id to existing survey/estimation/quotation tables
-alter table balcony_surveys add column element_id uuid references project_elements(id) on delete cascade;
-alter table staircase_surveys add column element_id uuid references project_elements(id) on delete cascade;
-alter table estimations add column element_id uuid references project_elements(id) on delete cascade;
-alter table quotations add column element_id uuid references project_elements(id) on delete cascade;
-
 -- Migrate existing projects: create one element per project based on its type
 insert into project_elements (project_id, type, name, display_order)
 select
