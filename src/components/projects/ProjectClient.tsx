@@ -101,7 +101,14 @@ function defaultCncRate(thickness: number, prices: ResolvedPrices) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES }: { project: any, initialPrices?: ResolvedPrices }) {
+export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES, surveys, estimations, quotation, elementId }: {
+  project: any,
+  initialPrices?: ResolvedPrices,
+  surveys?: BalconySurvey[],
+  estimations?: any[],
+  quotation?: any,
+  elementId?: string
+}) {
   const [prices, setPrices] = useState<ResolvedPrices>(initialPrices)
   useEffect(() => {
     getResolvedPrices().then(setPrices).catch(() => {})
@@ -116,10 +123,10 @@ export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES
     balcony_surveys: [], estimations: [], quotations: [],
   }
 
-  const existingSurveys: BalconySurvey[]  = projectMeta.balcony_surveys ?? []
+  const existingSurveys: BalconySurvey[]  = surveys ?? projectMeta.balcony_surveys ?? []
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const existingEstimations: any[]        = projectMeta.estimations ?? []
-  const existingQuotation                 = projectMeta.quotations?.[0]
+  const existingEstimations: any[]        = estimations ?? projectMeta.estimations ?? []
+  const existingQuotation                 = quotation ?? projectMeta.quotations?.[0]
 
   // Index estimations by survey_id
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -281,6 +288,7 @@ export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES
     try {
       const result = await saveAreaSurvey(
         projectMeta.id,
+        elementId ?? projectMeta.id,
         activeArea.surveyId,
         activeArea.name,
         activeArea.survey as Omit<BalconySurvey, 'id' | 'project_id' | 'created_at'>,
@@ -1205,6 +1213,7 @@ export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES
               directTotal, contingencyPercent, contingencyCost,
               adjustedCost, marginPercent, marginCost, quotedPrice,
             }}
+            elementId={elementId}
             estimationId={firstSavedEstimationId}
             existingQuotation={existingQuotation}
             isDemo={isDemo}

@@ -1,7 +1,7 @@
 import { getProject } from '@/app/actions/projects'
 import { getResolvedPrices } from '@/app/actions/prices'
+import { ProjectElementClient } from '@/components/projects/ProjectElementClient'
 import { ProjectClient } from '@/components/projects/ProjectClient'
-import { StaircaseClient } from '@/components/projects/StaircaseClient'
 import type { ResolvedPrices } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -29,9 +29,5 @@ export default async function ProjectPage({ params }: Props) {
     return <ProjectClient project={null} initialPrices={prices} />
   }
 
-  if (project.type === 'staircase') {
-    return <StaircaseClient project={project} initialPrices={prices} />
-  }
-
-  return <ProjectClient project={project} initialPrices={prices} />
+  return <ProjectElementClient project={project} initialPrices={prices} />
 }

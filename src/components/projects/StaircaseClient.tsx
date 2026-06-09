@@ -81,7 +81,14 @@ const DEFAULT_SURVEY: Partial<StaircaseSurvey> = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES }: { project: any, initialPrices?: ResolvedPrices }) {
+export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES, surveys, estimations, quotation, elementId }: {
+  project: any,
+  initialPrices?: ResolvedPrices,
+  surveys?: StaircaseSurvey[],
+  estimations?: any[],
+  quotation?: any,
+  elementId?: string
+}) {
   const [prices, setPrices] = useState<ResolvedPrices>(initialPrices)
   useEffect(() => {
     getResolvedPrices().then(setPrices).catch(() => {})
@@ -94,9 +101,9 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
     staircase_surveys: [], estimations: [], quotations: [],
   }
 
-  const existingSurvey     = projectMeta.staircase_surveys?.[0]
-  const existingEstimation = projectMeta.estimations?.[0]
-  const existingQuotation  = projectMeta.quotations?.[0]
+  const existingSurvey     = (surveys?.[0]) ?? projectMeta.staircase_surveys?.[0]
+  const existingEstimation = (estimations?.[0]) ?? projectMeta.estimations?.[0]
+  const existingQuotation  = quotation ?? projectMeta.quotations?.[0]
 
   const [survey, setSurvey]               = useState<Partial<StaircaseSurvey>>(existingSurvey ?? DEFAULT_SURVEY)
   const [cncRatePerSheet, setCncRate]     = useState<number>(
@@ -176,6 +183,7 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
     try {
       await saveStaircaseSurveyAndEstimation(
         projectMeta.id,
+        elementId ?? projectMeta.id,
         survey as Omit<StaircaseSurvey, 'id' | 'project_id' | 'created_at'>,
         cncCuttingCost,
         installationCost,
@@ -972,6 +980,7 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
               directTotal, contingencyPercent, contingencyCost,
               adjustedCost, marginPercent, marginCost, quotedPrice,
             }}
+            elementId={elementId}
             estimationId={existingEstimation?.id ?? null}
             existingQuotation={existingQuotation}
             isDemo={isDemo}

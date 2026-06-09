@@ -7,13 +7,8 @@ import { Search, UserCheck } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
-import type { ProjectType } from '@/types'
-import { PROJECT_TYPE_LABELS } from '@/types'
 import { createProject } from '@/app/actions/projects'
 import { searchClients } from '@/app/actions/clients'
-
-const PROJECT_TYPE_OPTIONS = Object.entries(PROJECT_TYPE_LABELS).map(([value, label]) => ({ value, label }))
 
 interface ClientSuggestion {
   id: string
@@ -40,7 +35,6 @@ export default function NewProjectPage() {
     client_phone: '',
     client_email: '',
     client_company: '',
-    type: 'balcony' as ProjectType,
     title: '',
     location: '',
     notes: '',
@@ -184,9 +178,7 @@ export default function NewProjectPage() {
           <Card>
             <CardHeader><CardTitle>Project Details</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Select id="type" label="Project Type *" options={PROJECT_TYPE_OPTIONS}
-                value={form.type} onChange={(e) => set('type', e.target.value)} />
-              <Input id="title" label="Project Title *" placeholder="e.g. Balcony Railing Block A"
+              <Input id="title" label="Project Title *" placeholder="e.g. Residential Project Kigali"
                 value={form.title} onChange={(e) => set('title', e.target.value)} required />
               <Input id="location" label="Site Location *" placeholder="e.g. Kigali, Kimihurura"
                 value={form.location} onChange={(e) => set('location', e.target.value)}

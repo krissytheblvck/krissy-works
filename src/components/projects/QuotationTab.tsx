@@ -50,6 +50,7 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   existingQuotation: any
   isDemo: boolean
+  elementId?: string
 }
 
 function buildClientCategories(areas: AreaForQuot[], pricing: PricingBreakdown, projectType: ProjectType) {
@@ -160,7 +161,7 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
     setSaving(true)
     setFeedback(null)
     try {
-      await saveQuotation(project.id, estimationId ?? 'demo', {
+      await saveQuotation(project.id, elementId ?? project.id, estimationId ?? 'demo', {
         scope_of_work: scopeNotes,
         payment_terms: paymentTerms,
         timeline_weeks: timelineWeeks,

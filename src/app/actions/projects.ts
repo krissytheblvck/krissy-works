@@ -1,7 +1,7 @@
 'use server'
 
 import { createServerClient } from '@/lib/supabase-server'
-import type { BalconySurvey, ProjectType } from '@/types'
+import type { BalconySurvey } from '@/types'
 import { calculateBalconyEstimation } from '@/lib/estimation'
 import { getResolvedPrices } from '@/app/actions/prices'
 import { revalidatePath } from 'next/cache'
@@ -12,7 +12,6 @@ export async function createProject(data: {
   client_email?: string
   client_company?: string
   client_id?: string
-  type: ProjectType
   title: string
   location: string
   notes?: string
@@ -41,22 +40,20 @@ export async function createProject(data: {
   }
 
   // 2. Generate project code
-  const prefix = data.type.slice(0, 3).toUpperCase()
   const { count } = await db
     .from('projects')
     .select('*', { count: 'exact', head: true })
-    .eq('type', data.type)
 
   const num = String((count ?? 0) + 1).padStart(3, '0')
-  const project_code = `${prefix}-${num}`
+  const project_code = `PRJ-${num}`
 
-  // 3. Create project
+  // 3. Create project with a default "balcony" type (overridden when first element is added)
   const { data: project, error: projectError } = await db
     .from('projects')
     .insert({
       project_code,
       client_id: clientId,
-      type: data.type,
+      type: 'custom',
       title: data.title,
       location: data.location,
       notes: data.notes || null,
@@ -95,12 +92,14 @@ export async function getProject(id: string) {
     .select(`
       *,
       client:clients(*),
+      project_elements(*),
       balcony_surveys(*),
       staircase_surveys(*),
       estimations(*),
       quotations(*)
     `)
     .eq('id', id)
+    .order('display_order', { foreignTable: 'project_elements' })
     .single()
 
   if (error) throw new Error(error.message)
@@ -122,6 +121,7 @@ export async function updateProjectStatus(id: string, status: string) {
 
 export async function saveAreaSurvey(
   projectId: string,
+  elementId: string,
   surveyId: string | null,
   areaName: string,
   survey: Omit<BalconySurvey, 'id' | 'project_id' | 'created_at'>,
@@ -146,7 +146,7 @@ export async function saveAreaSurvey(
   if (surveyId) {
     const { data, error } = await db
       .from('balcony_surveys')
-      .update({ ...survey, name: areaName, project_id: projectId })
+      .update({ ...survey, name: areaName, project_id: projectId, element_id: elementId })
       .eq('id', surveyId)
       .eq('project_id', projectId)
       .select()
@@ -156,7 +156,7 @@ export async function saveAreaSurvey(
   } else {
     const { data, error } = await db
       .from('balcony_surveys')
-      .insert({ ...survey, name: areaName, project_id: projectId })
+      .insert({ ...survey, name: areaName, project_id: projectId, element_id: elementId })
       .select()
       .single()
     if (error) throw new Error(error.message)
@@ -169,6 +169,7 @@ export async function saveAreaSurvey(
 
   const estPayload = {
     project_id: projectId,
+    element_id: elementId,
     survey_id: savedSurvey.id,
     post_count: calc.post_count,
     post_total_length_m: calc.post_total_length_m,
@@ -248,6 +249,7 @@ export async function deleteAreaSurvey(surveyId: string, projectId: string) {
 
 export async function saveQuotation(
   projectId: string,
+  elementId: string,
   estimationId: string,
   data: {
     scope_of_work: string
@@ -258,34 +260,52 @@ export async function saveQuotation(
 ) {
   const db = createServerClient()
 
-  const { count } = await db
+  // Find existing quotation for this estimation
+  const { data: existing } = await db
     .from('quotations')
-    .select('*', { count: 'exact', head: true })
-
-  const quoteNumber = `QUO-${new Date().getFullYear()}-${String((count ?? 0) + 1).padStart(4, '0')}`
+    .select('id')
+    .eq('estimation_id', estimationId)
+    .maybeSingle()
 
   const validUntil = new Date()
   validUntil.setDate(validUntil.getDate() + data.valid_days)
 
-  const { data: quotation, error } = await db
-    .from('quotations')
-    .upsert(
-      {
-        project_id: projectId,
-        estimation_id: estimationId,
-        quote_number: quoteNumber,
-        valid_until: validUntil.toISOString().split('T')[0],
-        scope_of_work: data.scope_of_work,
-        payment_terms: data.payment_terms,
-        timeline_weeks: data.timeline_weeks,
-        status: 'draft',
-      },
-      { onConflict: 'project_id' }
-    )
-    .select()
-    .single()
+  const payload = {
+    project_id: projectId,
+    element_id: elementId,
+    estimation_id: estimationId,
+    valid_until: validUntil.toISOString().split('T')[0],
+    scope_of_work: data.scope_of_work,
+    payment_terms: data.payment_terms,
+    timeline_weeks: data.timeline_weeks,
+    status: 'draft' as const,
+  }
 
-  if (error) throw new Error(error.message)
+  let quotation
+  if (existing) {
+    const { data, error } = await db
+      .from('quotations')
+      .update(payload)
+      .eq('id', existing.id)
+      .select()
+      .single()
+    if (error) throw new Error(error.message)
+    quotation = data
+  } else {
+    // Generate quote number only for new quotations
+    const { count } = await db
+      .from('quotations')
+      .select('*', { count: 'exact', head: true })
+    const quoteNumber = `QUO-${new Date().getFullYear()}-${String((count ?? 0) + 1).padStart(4, '0')}`
+
+    const { data, error } = await db
+      .from('quotations')
+      .insert({ ...payload, quote_number: quoteNumber })
+      .select()
+      .single()
+    if (error) throw new Error(error.message)
+    quotation = data
+  }
 
   await db
     .from('projects')
@@ -296,4 +316,53 @@ export async function saveQuotation(
   revalidatePath('/dashboard')
 
   return quotation
+}
+
+export async function createProjectElement(projectId: string, elementType: string, elementName: string) {
+  const db = createServerClient()
+
+  const { count } = await db
+    .from('project_elements')
+    .select('*', { count: 'exact', head: true })
+    .eq('project_id', projectId)
+
+  const { data, error } = await db
+    .from('project_elements')
+    .insert({
+      project_id: projectId,
+      type: elementType,
+      name: elementName,
+      display_order: (count ?? 0),
+    })
+    .select()
+    .single()
+
+  if (error) throw new Error(error.message)
+
+  revalidatePath(`/projects/${projectId}`)
+  return data
+}
+
+export async function updateProjectElement(id: string, data: { name?: string; display_order?: number }) {
+  const db = createServerClient()
+  const { error } = await db.from('project_elements').update(data).eq('id', id)
+  if (error) throw new Error(error.message)
+}
+
+export async function reorderProjectElements(projectId: string, elementIds: string[]) {
+  const db = createServerClient()
+  const updates = elementIds.map((id, i) =>
+    db.from('project_elements').update({ display_order: i }).eq('id', id)
+  )
+  await Promise.all(updates)
+  revalidatePath(`/projects/${projectId}`)
+}
+
+export async function deleteProjectElement(id: string) {
+  const db = createServerClient()
+  const { data: el } = await db.from('project_elements').select('project_id').eq('id', id).single()
+  if (!el) return
+  await db.from('project_elements').delete().eq('id', id)
+  revalidatePath(`/projects/${el.project_id}`)
+  revalidatePath('/dashboard')
 }

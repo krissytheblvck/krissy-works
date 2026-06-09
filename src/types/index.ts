@@ -34,6 +34,16 @@ export interface Client {
   created_at: string
 }
 
+export interface ProjectElement {
+  id: string
+  project_id: string
+  type: ProjectType
+  name: string
+  display_order: number
+  created_at: string
+  updated_at: string
+}
+
 export interface Project {
   id: string
   project_code: string
@@ -44,6 +54,11 @@ export interface Project {
   title: string
   location: string
   notes?: string
+  elements?: ProjectElement[]
+  balcony_surveys?: BalconySurvey[]
+  staircase_surveys?: StaircaseSurvey[]
+  estimations?: Estimation[]
+  quotations?: Quotation[]
   created_at: string
   updated_at: string
 }
@@ -70,6 +85,7 @@ export interface SectionOption {
 export interface BalconySurvey {
   id: string
   project_id: string
+  element_id?: string
   // Geometry
   total_length: number
   total_height: number
@@ -112,6 +128,7 @@ export interface BalconySurvey {
 export interface Estimation {
   id: string
   project_id: string
+  element_id?: string
   survey_id: string
   // Material quantities
   post_count: number
@@ -140,6 +157,7 @@ export interface Estimation {
 export interface Quotation {
   id: string
   project_id: string
+  element_id?: string
   estimation_id: string
   quote_number: string
   valid_until: string
@@ -191,9 +209,12 @@ export const PROJECT_TYPE_LABELS: Record<ProjectType, string> = {
   custom: 'Custom Element',
 }
 
+export const PROJECT_TYPE_OPTIONS = Object.entries(PROJECT_TYPE_LABELS).map(([value, label]) => ({ value, label }))
+
 export interface StaircaseSurvey {
   id: string
   project_id: string
+  element_id?: string
   // Geometry
   total_rise: number        // mm — vertical floor to floor
   total_run: number         // mm — horizontal distance
