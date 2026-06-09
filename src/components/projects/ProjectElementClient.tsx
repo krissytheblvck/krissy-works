@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Plus, X } from 'lucide-react'
+import { Plus, X, Menu } from 'lucide-react'
 import { ProjectClient } from './ProjectClient'
 import { StaircaseClient } from './StaircaseClient'
 import { Button } from '@/components/ui/button'
@@ -26,6 +26,7 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
   const [newType, setNewType] = useState<ProjectType>('balcony')
   const [newName, setNewName] = useState('')
   const [adding, setAdding] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   const activeElement = elements.find(e => e.id === activeElementId) ?? null
 
@@ -45,6 +46,11 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
     return (project.quotations ?? []).find((q: Quotation) => q.element_id === el.id) ?? null
   }
 
+  function handleSelectElement(id: string) {
+    setActiveElementId(id)
+    setSidebarOpen(false)
+  }
+
   const handleAdd = useCallback(async () => {
     if (!newName.trim()) return
     setAdding(true)
@@ -54,6 +60,7 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
       setActiveElementId(el.id)
       setShowAddForm(false)
       setNewName('')
+      setSidebarOpen(false)
     } catch (e) {
       console.error(e)
     } finally {
@@ -63,8 +70,13 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
 
   return (
     <div className="flex flex-1 min-h-0">
-      {/* Element sidebar */}
-      <aside className="w-56 shrink-0 border-r border-border bg-surface flex flex-col">
+      {/* Mobile drawer backdrop */}
+      {sidebarOpen && (
+        <div className="fixed inset-0 z-30 bg-black/50 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
+      {/* Element sidebar — slide-over on mobile, static sidebar on md+ */}
+      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-surface border-r border-border flex flex-col transition-transform duration-200 ease-in-out md:relative md:translate-x-0 md:z-auto md:shrink-0 md:w-56 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-3 border-b border-border">
           <div className="flex items-center justify-between mb-2">
             <p className="text-xs font-semibold text-muted uppercase tracking-wide">Elements</p>
@@ -110,7 +122,7 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
           {elements.map(el => (
             <button
               key={el.id}
-              onClick={() => setActiveElementId(el.id)}
+              onClick={() => handleSelectElement(el.id)}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 el.id === activeElementId
                   ? 'bg-gray-900 text-white'
@@ -126,6 +138,20 @@ export function ProjectElementClient({ project, initialPrices }: Props) {
 
       {/* Main content */}
       <div className="flex-1 min-w-0 flex flex-col">
+        {/* Mobile header with sidebar toggle */}
+        <div className="md:hidden flex items-center gap-2 px-3 py-2 border-b border-border shrink-0">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-1.5 -ml-1.5 text-muted hover:text-foreground rounded-md hover:bg-surface-hover"
+            aria-label="Open elements sidebar"
+          >
+            <Menu size={18} />
+          </button>
+          <span className="text-sm font-semibold text-foreground truncate">
+            {activeElement?.name || 'Project'}
+          </span>
+        </div>
+
         {activeElement ? (
           activeElement.type === 'staircase' ? (
             <StaircaseClient

@@ -341,7 +341,24 @@ export function QuotationTab({ project, projectType, areas, pricing, estimationI
             <hr className="border-border" />
 
             {/* Client-facing line items — no internal cost detail */}
-            <table className="w-full text-sm">
+            {/* Mobile card view */}
+            <div className="md:hidden space-y-3">
+              {clientCategories.map((cat, i) => (
+                <div key={i} className="flex justify-between items-center">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-foreground text-sm">{cat.label}</p>
+                    <p className="text-xs text-muted truncate">{cat.desc}</p>
+                  </div>
+                  <p className="font-medium text-foreground text-sm shrink-0 ml-3">{formatCurrency(cat.amount)}</p>
+                </div>
+              ))}
+              <div className="flex justify-between items-center pt-2 border-t-2 border-border">
+                <span className="font-bold text-foreground text-base">TOTAL</span>
+                <span className="font-bold text-xl text-foreground">{formatCurrency(pricing.quotedPrice)}</span>
+              </div>
+            </div>
+            {/* Desktop table */}
+            <table className="hidden md:table w-full text-sm">
               <thead>
                 <tr className="text-xs text-muted border-b border-border">
                   <th className="text-left pb-2 font-medium">Description</th>

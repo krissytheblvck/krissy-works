@@ -302,7 +302,7 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
 
       {/* Status stepper */}
       {!isDemo && (
-        <div className="bg-surface border-b border-border px-4 sm:px-6 py-2 overflow-x-auto">
+        <div className="bg-surface border-b border-border px-4 sm:px-6 py-2 overflow-x-auto scroll-hint-x">
           <div className="max-w-7xl mx-auto flex items-center gap-1 min-w-max">
             {STATUS_FLOW.map((s, i) => {
               const isDone    = STATUS_FLOW.indexOf(currentStatus) > i
@@ -312,7 +312,7 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
                   <button
                     onClick={() => handleStatusChange(s)}
                     disabled={statusChanging || s === currentStatus}
-                    className={`px-2.5 py-1 rounded text-xs font-medium transition-colors disabled:cursor-default ${
+                    className={`px-3 py-2 sm:px-2.5 sm:py-1 rounded text-xs font-medium transition-colors disabled:cursor-default ${
                       isCurrent ? STATUS_COLORS[s] + ' ring-1 ring-current'
                         : isDone ? 'bg-surface-muted text-muted hover:bg-surface-hover'
                         : 'bg-surface-muted text-muted hover:bg-surface-hover'
@@ -332,7 +332,7 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
         <div className="max-w-7xl mx-auto flex">
           {(['survey', 'estimation', 'quotation'] as const).map((tab) => (
             <button key={tab} type="button" onClick={() => setActiveTab(tab)}
-              className={`flex-1 sm:flex-none px-2 sm:px-6 py-3.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors min-h-12 sm:min-h-0 ${
+              className={`flex-1 sm:flex-none px-4 sm:px-6 py-3.5 sm:py-3 text-xs sm:text-sm font-medium border-b-2 transition-colors min-h-12 ${
                 activeTab === tab ? 'border-foreground text-foreground' : 'border-transparent text-muted hover:text-foreground'
               }`}>
               <span className="sm:hidden">{tab === 'survey' ? 'Survey' : tab === 'estimation' ? 'Estimate' : 'Quote'}</span>
@@ -428,8 +428,41 @@ export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRIC
                     </p>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <p className="text-[10px] text-muted px-4 pt-2 md:hidden">Swipe table → to compare options</p>
-                    <div className="overflow-x-auto scroll-hint-x">
+                    {/* Mobile card view */}
+                    <div className="md:hidden divide-y divide-border">
+                      {estimation.section_options.map((opt, i) => {
+                        const isChosen = opt.num_sections === chosenN
+                        const isBest   = i === 0
+                        return (
+                          <div key={opt.num_sections}
+                            onClick={() => pickSection(opt)}
+                            className={`px-4 py-3 cursor-pointer transition-colors ${
+                              isChosen ? 'bg-gray-900 text-white' : 'hover:bg-surface-muted text-foreground'
+                            } ${!opt.structural ? 'opacity-50' : ''}`}>
+                            <div className="flex items-center justify-between">
+                              <span className="font-semibold">{opt.num_sections} sections</span>
+                              <span className="font-medium">{formatCurrency(opt.total_cost)}</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs mt-1 opacity-70 flex-wrap">
+                              <span>{opt.section_slope_mm}mm spacing</span>
+                              <span>·</span>
+                              <span>{opt.total_sheets} sheets</span>
+                              <span>·</span>
+                              <span>{opt.waste_percent}% waste</span>
+                              <span>·</span>
+                              <span>{opt.supplier_sheet.width_mm}×{opt.supplier_sheet.height_mm}{opt.panels_per_sheet > 1 ? ` ×${opt.panels_per_sheet}` : ''}</span>
+                            </div>
+                            <div className="flex gap-1.5 mt-1">
+                              {isBest && !isChosen && <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-medium">BEST</span>}
+                              {isChosen && <span className="text-xs bg-stone-100 text-stone-900 dark:bg-stone-800 dark:text-stone-100 px-1.5 py-0.5 rounded font-medium">✓ Selected</span>}
+                              {!opt.structural && <span className="text-xs text-orange-500">⚠ wide</span>}
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    {/* Desktop table */}
+                    <div className="hidden md:block overflow-x-auto scroll-hint-x">
                       <table className="w-full text-xs min-w-[720px]">
                         <thead>
                           <tr className="bg-surface-muted border-b border-border text-muted">
