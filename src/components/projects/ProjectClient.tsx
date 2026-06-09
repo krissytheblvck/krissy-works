@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Download, Save, ChevronRight, Plus, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { STATUS_COLORS, STATUS_LABELS } from '@/types'
-import type { BalconySurvey, ProjectStatus, ProjectType, SteelProfile, InfillType, GlassSystemType, MountingType, SectionOption, PanelLayout } from '@/types'
+import type { BalconySurvey, ProjectStatus, ProjectType, SteelProfile, InfillType, GlassSystemType, MountingType, SectionOption, PanelLayout, ResolvedPrices } from '@/types'
 import { calculateBalconyEstimation, generateGrasshopperParams } from '@/lib/estimation'
 import { DEFAULT_RESOLVED_PRICES } from '@/lib/default-prices'
 import { formatCurrency } from '@/lib/utils'
 import { saveAreaSurvey, deleteAreaSurvey, updateProjectStatus } from '@/app/actions/projects'
+import { getResolvedPrices } from '@/app/actions/prices'
 import { QuotationTab } from './QuotationTab'
 import { CustomSectionOption } from './CustomSectionOption'
 import { FeedbackBanner } from '@/components/ui/feedback-banner'
@@ -95,12 +96,16 @@ interface AreaState {
 
 function genTempId() { return `area_${Date.now()}_${Math.random().toString(36).slice(2, 7)}` }
 
-function defaultCncRate(thickness: number) {
-  return DEFAULT_RESOLVED_PRICES.cutting[thickness as keyof typeof DEFAULT_RESOLVED_PRICES.cutting]?.price ?? 60000
+function defaultCncRate(thickness: number, prices: ResolvedPrices) {
+  return prices.cutting[thickness as keyof typeof prices.cutting]?.price ?? 60000
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ProjectClient({ project }: { project: any }) {
+export function ProjectClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES }: { project: any, initialPrices?: ResolvedPrices }) {
+  const [prices, setPrices] = useState<ResolvedPrices>(initialPrices)
+  useEffect(() => {
+    getResolvedPrices().then(setPrices).catch(() => {})
+  }, [])
   const isDemo = !project
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -129,7 +134,7 @@ export function ProjectClient({ project }: { project: any }) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         name:            (s as any).name ?? 'Main Area',
         survey:          s,
-        cncRatePerSheet: defaultCncRate(s.sheet_thickness ?? 2),
+        cncRatePerSheet: defaultCncRate(s.sheet_thickness ?? 2, prices),
         saved:           true,
       }))
     : [{
@@ -229,7 +234,7 @@ export function ProjectClient({ project }: { project: any }) {
     let estimationError = ''
     if (isComplete) {
       try {
-        estimation = calculateBalconyEstimation(s as BalconySurvey, DEFAULT_RESOLVED_PRICES)
+        estimation = calculateBalconyEstimation(s as BalconySurvey, prices)
       } catch (e) {
         estimationError = e instanceof Error ? e.message : 'Could not calculate'
       }
@@ -239,7 +244,7 @@ export function ProjectClient({ project }: { project: any }) {
       ? (estimation.total_sheets ?? 0) * area.cncRatePerSheet : 0
 
     return { estimation, estimationError, cncCuttingCost, isGlassOnly, isComplete }
-  }), [areas])
+  }), [areas, prices])
 
   const activeArea = areas[activeAreaIdx] ?? areas[0]
   const activeCalc = areaCalcs[activeAreaIdx] ?? areaCalcs[0]
@@ -593,7 +598,7 @@ export function ProjectClient({ project }: { project: any }) {
                     bottomRailProfile={activeArea.survey.bottom_rail_profile!}
                     panelHeightMm={activeArea.survey.panel_layout === 'inset' ? activeArea.survey.panel_height_mm : undefined}
                     sheetThickness={activeArea.survey.sheet_thickness ?? 2}
-                    allSheets={DEFAULT_RESOLVED_PRICES.allSheets ?? []}
+                    allSheets={prices.allSheets ?? []}
                     initialValues={{
                       custom_sections: activeArea.survey.custom_sections,
                       custom_section_width_mm: activeArea.survey.custom_section_width_mm,

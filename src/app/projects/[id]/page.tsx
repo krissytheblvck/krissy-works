@@ -1,6 +1,8 @@
 import { getProject } from '@/app/actions/projects'
+import { getResolvedPrices } from '@/app/actions/prices'
 import { ProjectClient } from '@/components/projects/ProjectClient'
 import { StaircaseClient } from '@/components/projects/StaircaseClient'
+import type { ResolvedPrices } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,9 +12,10 @@ interface Props {
 
 export default async function ProjectPage({ params }: Props) {
   const { id } = await params
+  const prices: ResolvedPrices = await getResolvedPrices()
 
   if (id === 'demo' || id === 'demo-new') {
-    return <ProjectClient project={null} />
+    return <ProjectClient project={null} initialPrices={prices} />
   }
 
   let project: Awaited<ReturnType<typeof getProject>> | null = null
@@ -23,12 +26,12 @@ export default async function ProjectPage({ params }: Props) {
   }
 
   if (!project) {
-    return <ProjectClient project={null} />
+    return <ProjectClient project={null} initialPrices={prices} />
   }
 
   if (project.type === 'staircase') {
-    return <StaircaseClient project={project} />
+    return <StaircaseClient project={project} initialPrices={prices} />
   }
 
-  return <ProjectClient project={project} />
+  return <ProjectClient project={project} initialPrices={prices} />
 }

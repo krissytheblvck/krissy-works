@@ -36,6 +36,7 @@ export async function upsertPrice(price: Partial<MaterialPrice> & { id?: string 
   }
 
   revalidatePath('/settings/prices')
+  revalidatePath('/projects', 'layout')
 }
 
 export async function deletePrice(id: string) {
@@ -46,6 +47,7 @@ export async function deletePrice(id: string) {
     .eq('id', id)
   if (error) throw new Error(error.message)
   revalidatePath('/settings/prices')
+  revalidatePath('/projects', 'layout')
 }
 
 export async function getResolvedPrices(): Promise<ResolvedPrices> {

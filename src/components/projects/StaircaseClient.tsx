@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Download, Save, ChevronRight } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,12 +9,13 @@ import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { STATUS_COLORS, STATUS_LABELS } from '@/types'
-import type { StaircaseSurvey, ProjectStatus, SteelProfile, InfillType, GlassSystemType } from '@/types'
+import type { StaircaseSurvey, ProjectStatus, SteelProfile, InfillType, GlassSystemType, ResolvedPrices } from '@/types'
 import type { StaircaseSectionOption } from '@/lib/staircase-estimation'
 import { DEFAULT_RESOLVED_PRICES } from '@/lib/default-prices'
 import { calculateStaircaseEstimation, generateStaircaseGrasshopperParams } from '@/lib/staircase-estimation'
 import { formatCurrency } from '@/lib/utils'
 import { saveStaircaseSurveyAndEstimation } from '@/app/actions/staircase'
+import { getResolvedPrices } from '@/app/actions/prices'
 import { updateProjectStatus } from '@/app/actions/projects'
 import { QuotationTab } from './QuotationTab'
 import { StaircaseCustomSectionOption } from './StaircaseCustomSectionOption'
@@ -80,7 +81,11 @@ const DEFAULT_SURVEY: Partial<StaircaseSurvey> = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function StaircaseClient({ project }: { project: any }) {
+export function StaircaseClient({ project, initialPrices = DEFAULT_RESOLVED_PRICES }: { project: any, initialPrices?: ResolvedPrices }) {
+  const [prices, setPrices] = useState<ResolvedPrices>(initialPrices)
+  useEffect(() => {
+    getResolvedPrices().then(setPrices).catch(() => {})
+  }, [])
   const isDemo = !project
   const projectMeta = project ?? {
     id: 'demo', project_code: 'STA-DEMO', status: 'site_survey',
@@ -95,7 +100,7 @@ export function StaircaseClient({ project }: { project: any }) {
 
   const [survey, setSurvey]               = useState<Partial<StaircaseSurvey>>(existingSurvey ?? DEFAULT_SURVEY)
   const [cncRatePerSheet, setCncRate]     = useState<number>(
-    DEFAULT_RESOLVED_PRICES.cutting[(existingSurvey?.sheet_thickness ?? 2) as keyof typeof DEFAULT_RESOLVED_PRICES.cutting]?.price ?? 60000
+    prices.cutting[(existingSurvey?.sheet_thickness ?? 2) as keyof typeof prices.cutting]?.price ?? 60000
   )
   const [installationCost, setIC]         = useState<number>(existingEstimation?.installation_cost ?? 0)
   const [consumablesPercent, setConsumablesPercent] = useState(existingEstimation?.consumables_percent ?? 7)
@@ -145,7 +150,7 @@ export function StaircaseClient({ project }: { project: any }) {
          (survey.infill_type !== 'plain_sheet' ? survey.post_spacing : true))
 
   const estimation = isComplete
-    ? calculateStaircaseEstimation(survey as StaircaseSurvey, DEFAULT_RESOLVED_PRICES)
+    ? calculateStaircaseEstimation(survey as StaircaseSurvey, prices)
     : null
 
   const cncCuttingCost = estimation && survey.infill_type === 'plain_sheet'
@@ -499,7 +504,7 @@ export function StaircaseClient({ project }: { project: any }) {
                   topRailProfile={survey.top_rail_profile!}
                   bottomRailProfile={survey.bottom_rail_profile!}
                   sheetThickness={survey.sheet_thickness ?? 2}
-                  allSheets={DEFAULT_RESOLVED_PRICES.allSheets ?? []}
+                  allSheets={prices.allSheets ?? []}
                   initialValues={{
                     custom_sections: survey.custom_sections,
                     custom_section_width_mm: survey.custom_section_width_mm,
